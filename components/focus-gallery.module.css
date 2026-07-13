@@ -1,0 +1,173 @@
+.gallery {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(6.5rem, 9vw, 8rem);
+  align-items: end;
+  gap: clamp(0.8rem, 2vw, 1.5rem);
+}
+
+.stage {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  min-width: 0;
+  overflow: hidden;
+  background: #26221d;
+  isolation: isolate;
+  touch-action: pan-y;
+}
+
+.activeImage {
+  object-fit: cover;
+  animation: refocus 520ms var(--ease-optic) both;
+}
+
+.stage::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 62%, rgba(8, 8, 6, 0.5));
+}
+
+.refraction {
+  position: absolute;
+  z-index: 3;
+  width: 42%;
+  aspect-ratio: 1;
+  right: -11%;
+  top: 15%;
+  border: 1px solid rgba(252, 198, 14, 0.7);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 0.55rem rgba(243, 239, 229, 0.05);
+  pointer-events: none;
+}
+
+.counter {
+  position: absolute;
+  z-index: 4;
+  left: 1rem;
+  bottom: 0.9rem;
+  margin: 0;
+  color: rgba(243, 239, 229, 0.65);
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+}
+
+.counter span {
+  color: var(--gold);
+}
+
+.stageArrows {
+  position: absolute;
+  z-index: 5;
+  right: 0.8rem;
+  bottom: 0.7rem;
+  display: flex;
+  gap: 0.4rem;
+}
+
+.stageArrows button {
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(243, 239, 229, 0.3);
+  border-radius: 50%;
+  color: var(--ivory);
+  background: rgba(8, 8, 6, 0.34);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+}
+
+.stageArrows button:first-child svg {
+  transform: rotate(180deg);
+}
+
+.stageArrows button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.stageArrows svg {
+  width: 1rem;
+}
+
+.choices {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.choice {
+  min-width: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.32rem;
+  border: 0;
+  color: rgba(243, 239, 229, 0.45);
+  background: transparent;
+  cursor: pointer;
+  font: 800 0.55rem/1 var(--font-sans), sans-serif;
+  letter-spacing: 0.14em;
+  text-align: left;
+}
+
+.thumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid transparent;
+  background: #26221d;
+  transition: border-color 180ms ease, opacity 180ms ease;
+}
+
+.thumb img {
+  object-fit: cover;
+  object-position: center 32%;
+}
+
+.choice:not([data-active="true"]) .thumb {
+  opacity: 0.52;
+}
+
+.choice[data-active="true"] {
+  color: var(--gold);
+}
+
+.choice[data-active="true"] .thumb {
+  border-color: var(--gold);
+  opacity: 1;
+}
+
+@keyframes refocus {
+  from { opacity: 0.45; filter: blur(7px) saturate(0.75); transform: scale(1.025); }
+  to { opacity: 1; filter: blur(0) saturate(1); transform: scale(1); }
+}
+
+@media (max-width: 720px) {
+  .gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .choices {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.45rem;
+  }
+
+  .choice {
+    text-align: center;
+  }
+
+  .thumb {
+    aspect-ratio: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activeImage {
+    animation: none;
+  }
+}

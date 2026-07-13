@@ -1,0 +1,55 @@
+ID	Requisito	Rota	Dispositivo	Pri.	Status	Evidência	Commit
+RQ-001	Projeto deve possuir exatamente as rotas / e /instagram	Todas	Todos	P0	aprovado	Build estático + 16 testes rota/viewport	entrega final
+RQ-002	Estrutura deve estar pronta para preview e deploy na Vercel	Todas	Todos	P0	aprovado	`npm run build`; `.vercelignore`; URLs por ambiente	entrega final
+RQ-003	/ deve atender intenção de busca local no Google	/	Todos	P0	aprovado	HTML local, metadata, JSON-LD e Lighthouse SEO 100	entrega final
+RQ-004	/instagram deve ser projetada primeiro em 390×844	/instagram	Mobile	P0	aprovado	`.qa/final/instagram-390x844.png`	entrega final
+RQ-005	CTA principal deve abrir WhatsApp com mensagem contextual	Todas	Todos	P0	aprovado	Teste `metadata, dados locais e links são factuais`	entrega final
+RQ-006	CTA secundário deve abrir a rota correta no Maps	Todas	Todos	P0	aprovado	Teste dos hrefs oficiais do Maps	entrega final
+RQ-007	Nome, endereço, telefone e produtos devem seguir a fonte da verdade	Todas	Todos	P0	aprovado	`lib/business.ts` + teste factual	entrega final
+RQ-008	Nenhum claim não confirmado pode ser publicado	Todas	Todos	P0	aprovado	Auditoria de copy + busca por marcas/claims	entrega final
+RQ-009	Logo completa, símbolo e favicon devem manter proporção e contraste	Todas	Todos	P0	aprovado	Capturas finais + `/icon.png` 192×192	checkpoint hero + final
+RQ-010	Paleta deve partir dos arquivos originais da marca	Todas	Todos	P0	aprovado	`docs/assets-manifest.md`, tokens e capturas	checkpoint hero
+RQ-011	Identidade deve traduzir luz, foco, refração e florescimento	Todas	Todos	P0	aprovado	Capturas finais + gravações da lente e abertura	checkpoint hero
+RQ-012	Hero não pode parecer template de ótica ou moda	/	Todos	P0	aguarda revisão humana	Prova visual final pronta; avaliação externa ainda necessária	—
+RQ-013	Primeiro checkpoint deve conter apenas hero e motion principal	/	Todos	P0	aprovado	Commit `672c763` + `.qa/proof/`	checkpoint hero
+RQ-014	Séries 1, 2, 3 e 4 devem permanecer separadas e ordenadas	Todas	Todos	P0	aprovado	Teste `as séries permanecem separadas e ordenadas`	entrega final
+RQ-015	Imagens não podem ser misturadas aleatoriamente entre séries	Todas	Todos	P0	aprovado	Manifesto + DOM ordenado + capturas de cada série	entrega final
+RQ-016	Vídeo de baixa qualidade nunca pode ocupar hero ou full-bleed	Todas	Todos	P0	aprovado	`.qa/final/motion-390x844.png` e desktop	entrega final
+RQ-017	Vídeo ruim deve aparecer como mídia secundária pequena	Todas	Todos	P1	aprovado	Capturas da seção de movimento	entrega final
+RQ-018	Somente um vídeo pode estar ativo por vez	Todas	Todos	P0	aprovado	Teste `um vídeo por vez...`	entrega final
+RQ-019	Vídeos devem pausar fora da viewport e em aba oculta	Todas	Todos	P0	aprovado	Teste explícito de offscreen + visibilitychange	entrega final
+RQ-020	Galerias devem aceitar swipe, drag e teclado	Todas	Todos	P1	aprovado	Testes de teclado, mouse-drag e touch real	entrega final
+RQ-021	Autoplay deve pausar durante interação e retomar depois	Todas	Todos	P1	aprovado	Teste temporizado + `.qa/final/carousel-interaction-30s.webm`	entrega final
+RQ-022	Reduced motion deve remover loops e oferecer estado estático	Todas	Todos	P0	aprovado	Teste em contexto `reducedMotion: reduce`	entrega final
+RQ-023	/instagram deve mostrar WhatsApp na primeira dobra	/instagram	Mobile	P0	aprovado	Bounding box em cinco viewports mobile + capturas	entrega final
+RQ-024	/instagram não pode ser uma home completa empilhada	/instagram	Mobile	P0	aprovado	DOM compacto próprio + full screenshot	entrega final
+RQ-025	/ e /instagram não devem duplicar toda a mesma narrativa	Todas	Todos	P1	aprovado	Comparação de DOM e capturas das rotas	entrega final
+RQ-026	Conteúdo essencial deve existir em HTML sem depender de animação	/	Todos	P0	aprovado	Teste com JavaScript desabilitado	entrega final
+RQ-027	Deve existir um único H1 por rota	Todas	Todos	P0	aprovado	16 auditorias DOM rota/viewport	entrega final
+RQ-028	Controles devem possuir foco visível e áreas de toque adequadas	Todas	Todos	P0	aprovado	Auditoria de targets ≥44 px + navegação por teclado	entrega final
+RQ-029	Não pode existir overflow horizontal nos viewports obrigatórios	Todas	Mobile	P0	aprovado	`capture-report.json` sem inválidos + 16 testes	entrega final
+RQ-030	Mídia deve reservar proporção e evitar mudança de layout	Todas	Todos	P0	aprovado	CLS 0 + testes de conexão lenta e falha de imagem	entrega final
+RQ-031	3D não pode bloquear CTA, leitura ou carregamento inicial	Todas	Todos	P0	aprovado	WebGL/3D rejeitado; CTA disponível no HTML	entrega final
+RQ-032	Deve existir fallback sem WebGL	Todas	Todos	P0	aprovado	Implementação integral em CSS/HTML + teste sem JS	entrega final
+RQ-033	Marcas comerciais só entram após confirmação explícita	Todas	Todos	P0	aprovado	Zero referências comerciais em app/lib/public	entrega final
+RQ-034	Referências não podem ter layout, copy ou identidade copiados	Todas	Todos	P0	aprovado	`reference-analysis.md` + comparação visual final	entrega final
+RQ-035	Preview deve ser aprovado antes de qualquer deploy de produção	Todas	Todos	P0	pendente externo	Nenhum deploy de produção executado; URL de preview ainda ausente	—
+RQ-036	Screenshots, gravações e relatórios não podem entrar no build	Todas	Todos	P1	aprovado	`.vercelignore`; busca no `.next` retornou zero artefatos	entrega final
+RQ-037	Vídeos devem ser muted, playsInline, loop e possuir poster	Todas	Todos	P0	aprovado	Asserções DOM/browser nos dois vídeos	entrega final
+RQ-038	Vídeos devem respeitar saveData e usar poster sem autoplay	Todas	Mobile	P0	aprovado	Teste `saveData` sem requests MP4	entrega final
+RQ-039	Somente mídia realmente crítica pode usar priority	Todas	Todos	P0	aprovado	Somente retrato LCP de cada rota usa preload/fetchPriority	entrega final
+RQ-040	Imagens abaixo da dobra devem usar lazy loading e sizes coerente	Todas	Todos	P0	aprovado	Auditoria DOM/network + `sizes` em todas as imagens responsivas	entrega final
+RQ-041	Safe areas, svh e dvh devem ser tratados na rota social	/instagram	Mobile	P0	aprovado	CSS com `env(safe-area-inset-*)`/`svh` + capturas	entrega final
+RQ-042	Endereço e estacionamento devem existir em texto real	/	Todos	P0	aprovado	Teste sem JavaScript + DOM	entrega final
+RQ-043	Metadata, Open Graph, favicon, canonical e JSON-LD devem ser factuais	/	Todos	P0	aprovado	Teste de metadata + Lighthouse SEO 100	entrega final
+RQ-044	Nenhum domínio comercial pode ser inventado para metadata	Todas	Todos	P0	aprovado	`lib/site-url.ts` usa somente env Vercel/configurada	entrega final
+RQ-045	Links de WhatsApp devem preservar contexto de origem com mensagem distinta	Todas	Todos	P1	aprovado	Teste de mensagem e UTM por rota	entrega final
+RQ-046	Conteúdo importante não pode depender de hover	Todas	Touch	P0	aprovado	Teste touch real em 390×844	entrega final
+RQ-047	Mídia ausente deve manter layout estável e alternativa legível	Todas	Todos	P1	aprovado	Teste abortando `/_next/image`	entrega final
+RQ-048	A página deve permanecer compreensível com JavaScript desabilitado	Todas	Todos	P0	aprovado	Teste das duas rotas com JS desabilitado	entrega final
+RQ-049	O JavaScript inicial deve permanecer restrito a ilhas interativas	Todas	Todos	P1	aprovado	Server Components + Lighthouse resource summary	entrega final
+RQ-050	O vídeo ruim deve ser fisicamente reduzido, não apenas limitado por CSS	/	Todos	P1	aprovado	360×480, H.264, 0,916 MB confirmado por ffmpeg	entrega final
+RQ-051	Logos comerciais não confirmadas não podem entrar no conteúdo nem no bundle público	Todas	Todos	P0	aprovado	Busca zero + brutos removidos após checkpoint	entrega final
+RQ-052	Os viewports 768x1024, 1366x768 e 1440x900 também devem ser validados	Todas	Todos	P0	aprovado	6 testes rota/viewport + capturas correspondentes	entrega final
+
+Resultado: 50 requisitos aprovados com evidência. RQ-012 depende de revisão visual humana; RQ-035 depende de uma URL de preview Vercel e aprovação antes de produção.

@@ -1,0 +1,28 @@
+# dependencies
+/node_modules
+
+# next
+/.next
+/out
+
+# production
+/build
+
+# local environment
+.env*
+!.env.example
+
+# Vercel
+.vercel
+
+# QA artifacts (kept local and excluded from deployment)
+/.qa
+/playwright-report
+/test-results
+
+# tooling
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+Thumbs.db
+npm-debug.log*

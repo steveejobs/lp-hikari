@@ -1,0 +1,8 @@
+.qa
+playwright-report
+test-results
+docs
+skill evitar erros sites.txt
+scopo otica hikari.txt
+tests
+*.log

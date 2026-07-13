@@ -1,0 +1,122 @@
+.footer {
+  padding: clamp(4rem, 8vw, 7rem) 0 max(1.3rem, env(safe-area-inset-bottom));
+  color: var(--ivory);
+  background: #050504;
+  border-top: 1px solid rgba(252, 198, 14, 0.18);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 0.8fr;
+  gap: clamp(2rem, 6vw, 6rem);
+}
+
+.brand img {
+  width: clamp(7.5rem, 11vw, 10rem);
+  height: auto;
+}
+
+.brand p {
+  margin: 1.4rem 0 0;
+  color: var(--gold);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  font-style: italic;
+}
+
+.address p,
+.address address,
+.address span {
+  display: block;
+}
+
+.address p {
+  margin: 0 0 1rem;
+  color: var(--gold);
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.address address {
+  max-width: 20rem;
+  color: rgba(243, 239, 229, 0.78);
+  font-size: 0.9rem;
+  font-style: normal;
+  line-height: 1.7;
+}
+
+.address span {
+  margin-top: 0.65rem;
+  color: rgba(243, 239, 229, 0.56);
+  font-size: 0.76rem;
+}
+
+.links {
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+}
+
+.links a {
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-bottom: 1px solid rgba(243, 239, 229, 0.1);
+  color: rgba(243, 239, 229, 0.72);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.links a:hover {
+  color: var(--gold);
+}
+
+.links svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.bottom {
+  margin-top: clamp(3rem, 7vw, 5.5rem);
+  padding-top: 1.1rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid rgba(243, 239, 229, 0.1);
+  color: rgba(243, 239, 229, 0.58);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.bottom a:hover {
+  color: var(--gold);
+}
+
+.bottom a {
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+@media (max-width: 760px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: 2.4rem;
+  }
+
+  .links a {
+    min-height: 3rem;
+  }
+
+  .bottom {
+    flex-direction: column;
+  }
+
+  .bottom a {
+    width: 100%;
+  }
+}
