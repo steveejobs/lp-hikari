@@ -60,18 +60,6 @@
   pointer-events: none;
 }
 
-.label {
-  position: absolute;
-  z-index: 5;
-  left: 0.8rem;
-  bottom: 0.85rem;
-  color: rgba(243, 239, 229, 0.74);
-  font-size: 0.58rem;
-  font-weight: 850;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
-
 .arrows {
   position: absolute;
   z-index: 6;
@@ -110,19 +98,39 @@
 }
 
 .selector button {
-  min-height: 2.75rem;
+  position: relative;
+  min-height: 3.7rem;
   padding: 0;
   border: 1px solid rgba(243, 239, 229, 0.15);
-  color: rgba(243, 239, 229, 0.46);
-  background: transparent;
-  font: 850 0.58rem/1 var(--font-sans), sans-serif;
-  letter-spacing: 0.14em;
+  overflow: hidden;
+  background: #26221d;
+  cursor: pointer;
+  transition:
+    border-color var(--motion-fast) ease,
+    opacity var(--motion-fast) ease,
+    transform var(--motion-fast) var(--ease-focus);
+}
+
+.selectorThumb {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.selectorThumb img {
+  object-fit: cover;
+  object-position: center 32%;
+}
+
+.selector button:not([data-active="true"]) {
+  opacity: 0.48;
 }
 
 .selector button[data-active="true"] {
-  color: var(--black);
   border-color: var(--gold);
-  background: var(--gold);
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 0.6rem 1.4rem rgba(0, 0, 0, 0.18);
 }
 
 @keyframes focus-in {
@@ -134,5 +142,9 @@
   .image,
   .refractedImage {
     animation: none;
+  }
+
+  .selector button {
+    transition: none;
   }
 }

@@ -13,6 +13,7 @@
   background: #26221d;
   isolation: isolate;
   touch-action: pan-y;
+  border-radius: 0 clamp(2.8rem, 6vw, 5rem) 0 0 / 0 clamp(2rem, 4vw, 3.5rem) 0 0;
 }
 
 .activeImage {
@@ -42,20 +43,24 @@
   pointer-events: none;
 }
 
-.counter {
+.progress {
   position: absolute;
   z-index: 4;
   left: 1rem;
-  bottom: 0.9rem;
-  margin: 0;
-  color: rgba(243, 239, 229, 0.65);
-  font-size: 0.62rem;
-  font-weight: 850;
-  letter-spacing: 0.14em;
+  bottom: 1.25rem;
+  width: clamp(3.5rem, 8vw, 5.5rem);
+  height: 2px;
+  overflow: hidden;
+  background: rgba(243, 239, 229, 0.26);
 }
 
-.counter span {
-  color: var(--gold);
+.progress i {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background: var(--gold);
+  transform-origin: left;
+  transition: transform var(--motion-base) var(--ease-focus);
 }
 
 .stageArrows {
@@ -68,8 +73,8 @@
 }
 
 .stageArrows button {
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 3rem;
+  height: 3rem;
   padding: 0;
   display: grid;
   place-items: center;
@@ -101,10 +106,10 @@
 
 .choice {
   min-width: 0;
+  min-height: 2.75rem;
   padding: 0;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.32rem;
   border: 0;
   color: rgba(243, 239, 229, 0.45);
   background: transparent;
@@ -169,5 +174,9 @@
 @media (prefers-reduced-motion: reduce) {
   .activeImage {
     animation: none;
+  }
+
+  .progress i {
+    transition: none;
   }
 }

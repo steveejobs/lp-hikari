@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Newsreader } from "next/font/google";
 import "./globals.css";
+import { MotionController } from "@/components/motion-controller";
 import { business, fullAddress } from "@/lib/business";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -79,6 +80,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <a className="skip-link" href="#conteudo">Pular para o conteúdo</a>
         {children}
+        <MotionController />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

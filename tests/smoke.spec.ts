@@ -24,7 +24,7 @@ async function openIsolated(browser: Browser, route: string, viewport: { width: 
     const message = request.failure()?.errorText ?? "unknown";
     if (!message.includes("ERR_ABORTED")) failures.push(`${message} ${request.url()}`);
   });
-  const response = await page.goto(route, { waitUntil: "networkidle" });
+  const response = await page.goto(route, { waitUntil: "domcontentloaded" });
   return { context, page, errors, failures, response };
 }
 
@@ -76,7 +76,9 @@ for (const route of ["/", "/instagram"]) {
 }
 
 test("metadata, dados locais e links são factuais", async ({ page }) => {
-  await page.goto("/", { waitUntil: "networkidle" });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await expect(page.locator("[data-brand-icon]")).toHaveCount(4);
+  await expect(page.locator("body")).not.toContainText("\u5149");
   await expect(page).toHaveTitle(/Ótica Hikari.*Araguaína/);
   await expect(page.locator('meta[name="description"]')).toHaveAttribute("content", /Óculos solares e receituários/);
   const canonical = await page.locator('link[rel="canonical"]').getAttribute("href");
@@ -97,7 +99,9 @@ test("metadata, dados locais e links são factuais", async ({ page }) => {
   const mapHref = await page.getByRole("link", { name: /Traçar rota/ }).first().getAttribute("href");
   expect(mapHref).toContain("google.com/maps/place");
 
-  await page.goto("/instagram", { waitUntil: "networkidle" });
+  await page.goto("/instagram", { waitUntil: "domcontentloaded" });
+  await expect(page.locator("[data-brand-icon]")).toHaveCount(2);
+  await expect(page.locator("body")).not.toContainText("\u5149");
   const instagramWhatsApp = await page.getByRole("link", { name: /Falar no WhatsApp/ }).first().getAttribute("href");
   expect(new URL(instagramWhatsApp ?? "http://invalid").searchParams.get("text")).toContain("Vim pelo Instagram da Ótica Hikari");
   expect(instagramWhatsApp).toContain("utm_source=instagram");
@@ -106,7 +110,7 @@ test("metadata, dados locais e links são factuais", async ({ page }) => {
 });
 
 test("as séries permanecem separadas e ordenadas", async ({ page }) => {
-  await page.goto("/", { waitUntil: "networkidle" });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
   await expect(page.locator('[data-series="01"] [data-series-item]')).toHaveCount(10);
   expect(await page.locator('[data-series="01"] [data-series-item]').evaluateAll((items) => items.map((item) => item.getAttribute("data-series-item")))).toEqual(["01", "02", "03", "04", "05", "06", "07", "08", "09", "10"]);
   expect(await page.locator('[data-series="02"][data-series-item]').evaluateAll((items) => items.map((item) => item.getAttribute("data-series-item")))).toEqual(["01", "02"]);
@@ -116,13 +120,13 @@ test("as séries permanecem separadas e ordenadas", async ({ page }) => {
 });
 
 test("galerias respondem a teclado e interação", async ({ page }) => {
-  await page.goto("/", { waitUntil: "networkidle" });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
   const carousel = page.locator('[data-series="01"]');
   await carousel.scrollIntoViewIfNeeded();
   const track = carousel.locator('[aria-label*="Use as setas"]');
   await track.focus();
   await page.keyboard.press("ArrowRight");
-  await expect(carousel.getByText(/02/).first()).toBeVisible();
+  await expect(carousel.locator('[aria-live="polite"]')).toHaveText(/Imagem 2 de 10/);
 
   await track.evaluate((element) => element.scrollTo({ left: 0, behavior: "auto" }));
   await page.waitForTimeout(350);
@@ -141,9 +145,9 @@ test("galerias respondem a teclado e interação", async ({ page }) => {
   await focusGallery.scrollIntoViewIfNeeded();
   await focusGallery.locator('[tabindex="0"]').focus();
   await page.keyboard.press("End");
-  await expect(focusGallery.getByText(/04 \/ 04/)).toBeVisible();
+  await expect(focusGallery.locator('[aria-live="polite"]')).toContainText("Perfil com óculos solares de haste clara");
 
-  await page.goto("/instagram", { waitUntil: "networkidle" });
+  await page.goto("/instagram", { waitUntil: "domcontentloaded" });
   const instagramFocus = page.locator('[data-series="04"]');
   await instagramFocus.locator('[role="region"]').focus();
   await page.keyboard.press("ArrowRight");
@@ -152,7 +156,7 @@ test("galerias respondem a teclado e interação", async ({ page }) => {
 
 test("autoplay pausa durante a interação e retoma depois", async ({ page }) => {
   test.setTimeout(55_000);
-  await page.goto("/", { waitUntil: "networkidle" });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
   const carousel = page.locator('[data-series="01"]');
   const status = carousel.locator('[aria-live="polite"]');
   const track = carousel.locator('[aria-label*="Use as setas"]');
@@ -179,8 +183,13 @@ test("gestos touch mudam o foco sem depender de hover", async ({ browser }) => {
     isMobile: true,
   });
   const page = await context.newPage();
-  await page.goto("/instagram", { waitUntil: "networkidle" });
+  await page.goto("/instagram", { waitUntil: "domcontentloaded" });
   const stage = page.locator('[data-series="04"] [role="region"]');
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-motion-mode",
+    /full|lite/,
+  );
+  await expect(stage).toBeVisible();
   const box = await stage.boundingBox();
   expect(box).not.toBeNull();
 
@@ -203,7 +212,7 @@ test("gestos touch mudam o foco sem depender de hover", async ({ browser }) => {
 
 test("resize entre desktop, mobile e tablet preserva o layout", async ({ page }) => {
   for (const route of ["/", "/instagram"]) {
-    await page.goto(route, { waitUntil: "networkidle" });
+    await page.goto(route, { waitUntil: "domcontentloaded" });
     for (const viewport of [
       { width: 1440, height: 900 },
       { width: 360, height: 800 },
@@ -246,13 +255,13 @@ test("conexão lenta mantém conteúdo e espaço do hero", async ({ browser }) =
 test("reduced motion preserva conteúdo e mantém vídeos em poster", async ({ browser }) => {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
   const page = await context.newPage();
-  await page.goto("/", { waitUntil: "networkidle" });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
   await expect(page.locator("h1")).toBeVisible();
   await expect(page.getByRole("link", { name: /Pedir atendimento/ }).first()).toBeVisible();
   await page.locator("video").first().scrollIntoViewIfNeeded();
   await page.waitForTimeout(700);
   expect(await page.locator("video").evaluateAll((videos) => videos.every((video) => (video as HTMLVideoElement).paused))).toBeTruthy();
-  await expect(page.getByText("Imagem estática")).toHaveCount(2);
+  await expect(page.getByText("Versão estática para reduzir movimento")).toHaveCount(2);
   await context.close();
 });
 
@@ -266,7 +275,11 @@ test("saveData impede autoplay e download antecipado do vídeo", async ({ browse
   page.on("request", (request) => {
     if (request.url().endsWith(".mp4")) videoRequests.push(request.url());
   });
-  await page.goto("/", { waitUntil: "networkidle" });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await expect(page.locator("[data-optical-hero]")).toHaveAttribute(
+    "data-optical-quality",
+    "lite",
+  );
   await page.locator("video").first().scrollIntoViewIfNeeded();
   await page.waitForTimeout(900);
   expect(await page.locator("video").first().evaluate((video) => (video as HTMLVideoElement).paused)).toBeTruthy();
@@ -275,7 +288,7 @@ test("saveData impede autoplay e download antecipado do vídeo", async ({ browse
 });
 
 test("um vídeo por vez e pausa ao perder visibilidade da aba", async ({ page }) => {
-  await page.goto("/", { waitUntil: "networkidle" });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
   const videos = page.locator("video");
   expect(await videos.evaluateAll((items) => items.every((item) => {
     const video = item as HTMLVideoElement;

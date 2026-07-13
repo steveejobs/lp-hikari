@@ -34,6 +34,14 @@
   background: #28251f;
 }
 
+.slide:nth-child(4n + 1) {
+  border-radius: 0 0 0 clamp(2.2rem, 5vw, 4.5rem) / 0 0 0 clamp(1.5rem, 3vw, 3rem);
+}
+
+.slide:nth-child(4n + 3) {
+  border-radius: 0 clamp(2.2rem, 5vw, 4.5rem) 0 0 / 0 clamp(1.5rem, 3vw, 3rem) 0 0;
+}
+
 .slide:nth-child(3n + 2) {
   transform: translateY(clamp(0.65rem, 1.5vw, 1.15rem));
 }
@@ -50,20 +58,6 @@
   filter: saturate(1.04) contrast(1.03);
 }
 
-.index {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  min-width: 3rem;
-  padding: 0.65rem 0.7rem;
-  color: var(--black);
-  background: var(--gold);
-  font-size: 0.62rem;
-  font-weight: 900;
-  letter-spacing: 0.15em;
-  text-align: center;
-}
-
 .controls {
   width: min(calc(100% - (var(--site-gutter) * 2)), var(--site-width));
   margin: clamp(1.3rem, 3vw, 2.2rem) auto 0;
@@ -73,25 +67,22 @@
   gap: 1.5rem;
 }
 
-.status {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  color: rgba(243, 239, 229, 0.56);
-  font-size: 0.62rem;
-  font-weight: 800;
-  letter-spacing: 0.15em;
-}
-
-.status span {
-  color: var(--gold);
-}
-
-.status i {
-  width: 2.6rem;
+.progress {
+  position: relative;
+  width: clamp(4rem, 8vw, 7rem);
   height: 1px;
+  display: block;
+  overflow: hidden;
   background: rgba(243, 239, 229, 0.22);
+}
+
+.progress i {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background: linear-gradient(90deg, var(--gold-deep), var(--gold));
+  transform-origin: left;
+  transition: transform var(--motion-base) var(--ease-focus);
 }
 
 .dots {
@@ -195,6 +186,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .image,
+  .progress i,
   .dot::before,
   .arrows button {
     transition: none;

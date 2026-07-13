@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { BrandIcon } from "@/components/brand-icon";
 import { ArrowIcon, InstagramIcon, RouteIcon, WhatsAppIcon } from "@/components/icons";
 import { InstagramFocus } from "@/components/instagram-focus";
 import { business, fullAddress, getWhatsAppUrl } from "@/lib/business";
@@ -57,15 +58,17 @@ export default function InstagramPage() {
           </div>
 
           <div className={styles.visual}>
-            <p><span aria-hidden="true">光</span> deslize para mudar o foco</p>
+            <p>
+              <BrandIcon className={styles.hintMark} sizes="18px" />
+              deslize para mudar o foco
+            </p>
             <InstagramFocus items={seriesFour.slice(0, 3)} />
           </div>
         </div>
       </section>
 
       <section className={styles.visit} aria-labelledby="visit-title">
-        <div className={styles.visitInner}>
-          <p className={styles.visitCode}>VISITA / 01</p>
+        <div className={styles.visitInner} data-reveal="line-reveal">
           <div>
             <h2 id="visit-title">No Centro de <em>Araguaína.</em></h2>
             <address>{fullAddress}</address>
@@ -78,9 +81,9 @@ export default function InstagramPage() {
       </section>
 
       <section className={styles.continueSection} aria-labelledby="continue-title">
-        <div className={styles.continueInner}>
-          <span aria-hidden="true">光</span>
-          <p>Quer ver os quatro ensaios?</p>
+        <div className={styles.continueInner} data-reveal="focus-reveal">
+          <BrandIcon className={styles.continueMark} sizes="48px" />
+          <p>Quer percorrer toda a história?</p>
           <h2 id="continue-title">Continue a experiência no site completo.</h2>
           <Link href="/">
             Entrar no site <ArrowIcon />

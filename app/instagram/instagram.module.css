@@ -1,7 +1,9 @@
 .page {
   min-height: 100svh;
   color: var(--ivory);
-  background: var(--black);
+  background:
+    radial-gradient(ellipse at 84% 12%, rgba(84, 40, 34, 0.1), transparent 24rem),
+    var(--black-deep);
 }
 
 .hero {
@@ -15,8 +17,9 @@
   overflow: clip;
   isolation: isolate;
   background:
-    radial-gradient(circle at 78% 46%, rgba(252, 198, 14, 0.12), transparent 33%),
-    var(--black);
+    radial-gradient(ellipse at 78% 46%, rgba(252, 198, 14, 0.105), transparent 34%),
+    conic-gradient(from 205deg at 78% 46%, transparent, rgba(84, 40, 34, 0.16), transparent 23%),
+    linear-gradient(160deg, var(--black-deep), var(--black-warm));
 }
 
 .hero::before {
@@ -24,7 +27,7 @@
   position: absolute;
   z-index: -1;
   inset: 0;
-  opacity: 0.15;
+  opacity: 0.12;
   background-image:
     linear-gradient(rgba(252, 198, 14, 0.13) 1px, transparent 1px),
     linear-gradient(90deg, rgba(252, 198, 14, 0.13) 1px, transparent 1px);
@@ -42,6 +45,7 @@
   justify-content: space-between;
   gap: 1rem;
   border-bottom: 1px solid rgba(243, 239, 229, 0.13);
+  animation: instagramHeader 560ms 80ms var(--ease-focus) both;
 }
 
 .header img {
@@ -80,6 +84,7 @@
   font-weight: 850;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  animation: instagramFocus 520ms 150ms var(--ease-focus) both;
 }
 
 .copy h1 {
@@ -90,6 +95,7 @@
   font-weight: 420;
   letter-spacing: -0.052em;
   line-height: 0.88;
+  animation: instagramTitle 760ms 210ms var(--ease-focus) both;
 }
 
 .copy h1 em {
@@ -104,6 +110,7 @@
   color: rgba(243, 239, 229, 0.64);
   font-size: 0.9rem;
   line-height: 1.65;
+  animation: instagramFocus 520ms 460ms var(--ease-focus) both;
 }
 
 .actions {
@@ -112,9 +119,12 @@
   display: grid;
   grid-template-columns: 1.3fr 0.85fr;
   gap: 0.55rem;
+  animation: instagramActions 560ms 620ms var(--ease-focus) both;
 }
 
 .actions a {
+  position: relative;
+  overflow: hidden;
   min-height: 3.45rem;
   padding: 0.75rem 0.9rem;
   display: flex;
@@ -125,6 +135,15 @@
   border-radius: 999px;
   font-size: 0.76rem;
   font-weight: 850;
+  transition:
+    transform var(--motion-fast) var(--ease-focus),
+    border-color var(--motion-fast) ease,
+    background var(--motion-fast) ease;
+}
+
+.actions a:active {
+  transform: scale(0.98);
+  transition-duration: 90ms;
 }
 
 .actions svg {
@@ -154,6 +173,7 @@
   color: rgba(243, 239, 229, 0.42);
   font-size: 0.58rem;
   font-weight: 700;
+  animation: instagramFocus 480ms 760ms var(--ease-focus) both;
 }
 
 .visual > p {
@@ -168,35 +188,49 @@
   text-transform: uppercase;
 }
 
-.visual > p span {
-  color: var(--gold);
-  font-family: serif;
-  font-size: 1rem;
+.visual {
+  position: relative;
+  isolation: isolate;
+  animation: instagramVisual 880ms 480ms var(--ease-focus) both;
+}
+
+.visual::after {
+  content: "";
+  position: absolute;
+  z-index: 8;
+  inset: 1.7rem -1px -1px;
+  pointer-events: none;
+  transform-origin: right center;
+  background: linear-gradient(
+    96deg,
+    var(--black-warm) 0%,
+    var(--black) 82%,
+    rgba(252, 198, 14, 0.08) 100%
+  );
+  animation: instagramVisualCurtain 880ms 480ms var(--ease-focus) both;
+}
+
+.hintMark {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex: 0 0 auto;
 }
 
 .visit {
   padding: clamp(4.5rem, 11vw, 8rem) max(1rem, env(safe-area-inset-right)) clamp(4.5rem, 11vw, 8rem) max(1rem, env(safe-area-inset-left));
   color: var(--black);
-  background: var(--ivory);
+  background:
+    radial-gradient(ellipse at 82% 18%, rgba(252, 198, 14, 0.08), transparent 26%),
+    var(--ivory-warm);
 }
 
 .visitInner {
   width: min(100%, 65rem);
   margin-inline: auto;
   display: grid;
-  grid-template-columns: 0.3fr minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: clamp(1.5rem, 5vw, 5rem);
-}
-
-.visitCode {
-  align-self: start;
-  margin: 0;
-  padding-top: 0.8rem;
-  border-top: 1px solid rgba(8, 8, 6, 0.25);
-  font-size: 0.56rem;
-  font-weight: 850;
-  letter-spacing: 0.14em;
 }
 
 .visit h2 {
@@ -248,8 +282,9 @@
   padding: clamp(5rem, 12vw, 9rem) max(1rem, env(safe-area-inset-right)) clamp(5rem, 12vw, 9rem) max(1rem, env(safe-area-inset-left));
   text-align: center;
   background:
-    radial-gradient(circle at 50% 38%, rgba(252, 198, 14, 0.11), transparent 38%),
-    var(--black);
+    radial-gradient(ellipse at 50% 38%, rgba(252, 198, 14, 0.1), transparent 38%),
+    conic-gradient(from 210deg at 50% 40%, transparent, rgba(84, 40, 34, 0.14), transparent 24%),
+    linear-gradient(160deg, var(--black-deep), var(--black-warm));
 }
 
 .continueInner {
@@ -260,10 +295,9 @@
   align-items: center;
 }
 
-.continueInner > span {
-  color: var(--gold);
-  font-family: serif;
-  font-size: 2.5rem;
+.continueMark {
+  width: 3rem;
+  height: auto;
 }
 
 .continueInner > p {
@@ -351,6 +385,78 @@
 
 .footer svg {
   width: 1rem;
+}
+
+@keyframes instagramHeader {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+    filter: brightness(1.35);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+    filter: brightness(1);
+  }
+}
+
+@keyframes instagramFocus {
+  from {
+    opacity: 0;
+    filter: blur(5px);
+    transform: translateY(0.6rem);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes instagramTitle {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 74% 0);
+    filter: blur(4px);
+    transform: translateY(0.9rem);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes instagramActions {
+  from {
+    opacity: 0;
+    clip-path: inset(0 48% 0 48% round 999px);
+    transform: translateY(0.65rem);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 round 999px);
+    transform: translateY(0);
+  }
+}
+
+@keyframes instagramVisual {
+  from {
+    opacity: 0.25;
+    filter: brightness(1.22) saturate(0.75);
+    transform: perspective(900px) rotateY(-1.5deg);
+  }
+  to {
+    opacity: 1;
+    filter: brightness(1) saturate(1);
+    transform: perspective(900px) rotateY(0);
+  }
+}
+
+@keyframes instagramVisualCurtain {
+  from { transform: scaleX(1.08) skewX(-2.5deg); }
+  to { transform: scaleX(0) skewX(-2.5deg); }
 }
 
 @media (max-width: 720px) {
@@ -458,5 +564,22 @@
   .quickFacts {
     flex-direction: column;
     gap: 0.2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header,
+  .handle,
+  .copy h1,
+  .description,
+  .actions,
+  .quickFacts,
+  .visual {
+    animation: none;
+  }
+
+  .visual::after {
+    display: none;
+    animation: none;
   }
 }

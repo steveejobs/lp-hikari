@@ -35,31 +35,26 @@
   color: var(--black);
   background: var(--gold);
   cursor: pointer;
-  transition: transform 180ms ease, background 180ms ease;
+  transition:
+    transform var(--motion-fast) var(--ease-focus),
+    background var(--motion-fast) ease,
+    box-shadow var(--motion-fast) ease;
 }
 
 .control:hover {
   transform: scale(1.05);
   background: var(--ivory);
+  box-shadow: 0 0.8rem 1.8rem rgba(8, 8, 6, 0.24);
+}
+
+.control:active {
+  transform: scale(0.94);
+  transition-duration: 90ms;
 }
 
 .control svg {
   width: 1.15rem;
   height: 1.15rem;
-}
-
-.reducedLabel {
-  position: absolute;
-  z-index: 2;
-  right: 0.7rem;
-  bottom: 0.7rem;
-  padding: 0.5rem 0.65rem;
-  color: rgba(243, 239, 229, 0.72);
-  background: rgba(8, 8, 6, 0.72);
-  font-size: 0.58rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
 }
 
 @media (prefers-reduced-motion: reduce) {

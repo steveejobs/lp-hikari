@@ -1,14 +1,58 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
+import { BrandIcon } from "@/components/brand-icon";
 import { ControlledVideo } from "@/components/controlled-video";
 import { FocusGallery } from "@/components/focus-gallery";
 import { OpticalHero } from "@/components/optical-hero";
-import { RouteIcon, WhatsAppIcon } from "@/components/icons";
+import { ArrowIcon, RouteIcon, WhatsAppIcon } from "@/components/icons";
 import { SeriesCarousel } from "@/components/series-carousel";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { business, fullAddress, getWhatsAppUrl } from "@/lib/business";
 import { seriesFour, seriesOne, seriesThree, seriesTwo } from "@/lib/galleries";
 import styles from "./home.module.css";
+
+const mapEmbedUrl =
+  "https://www.google.com/maps?q=-7.1922897,-48.2094709&z=16&output=embed";
+
+function AnimatedTitleLine({
+  text,
+  className,
+  delayOffset,
+}: {
+  text: string;
+  className: string;
+  delayOffset: number;
+}) {
+  const words = text.split(" ");
+
+  return (
+    <span className={className} aria-hidden="true">
+      {words.map((word, wordIndex) => {
+        const wordOffset =
+          delayOffset +
+          words
+            .slice(0, wordIndex)
+            .reduce((offset, previousWord) => offset + previousWord.length + 1, 0);
+
+        return (
+          <span className="hero-word" key={`${word}-${wordIndex}`}>
+            {Array.from(word).map((character, index) => (
+              <span
+                className="hero-char"
+                key={`${character}-${index}`}
+                style={{ "--char-index": index + wordOffset } as CSSProperties}
+              >
+                {character}
+              </span>
+            ))}
+            {wordIndex < words.length - 1 ? " " : null}
+          </span>
+        );
+      })}
+    </span>
+  );
+}
 
 export default function HomePage() {
   return (
@@ -17,14 +61,29 @@ export default function HomePage() {
       <main id="conteudo">
         <section className="home-hero" aria-labelledby="hero-title">
           <div className="hero-ambient" aria-hidden="true" />
-          <span className="hero-symbol" aria-hidden="true">光</span>
+          <BrandIcon
+            className="hero-symbol"
+            priority
+            sizes="(max-width: 720px) 48vw, min(24vw, 336px)"
+          />
 
           <div className="site-shell hero-grid">
             <div className="hero-copy">
-              <p className="eyebrow"><span aria-hidden="true">光</span> Ótica Hikari · Araguaína</p>
-              <h1 id="hero-title" className="hero-title">
-                <span>O florescer</span>{" "}
-                <em>de um novo olhar.</em>
+              <p className="eyebrow">
+                <BrandIcon className="hero-focus-mark" sizes="29px" />
+                Ótica Hikari · Araguaína
+              </p>
+              <h1 id="hero-title" className="hero-title" aria-label="O florescer de um novo olhar.">
+                <AnimatedTitleLine
+                  text="O florescer"
+                  className="hero-title-line hero-title-primary"
+                  delayOffset={0}
+                />
+                <AnimatedTitleLine
+                  text="de um novo olhar."
+                  className="hero-title-line hero-title-gold"
+                  delayOffset={3}
+                />
               </h1>
               <p className="hero-description">
                 Óculos solares e receituários no Centro de Araguaína. Um atendimento começa
@@ -75,49 +134,44 @@ export default function HomePage() {
 
         <section id="ensaios" className={styles.lightIntro} aria-labelledby="light-title">
           <div className={`site-shell ${styles.lightIntroGrid}`}>
-            <p className={styles.sectionCode}>LAB / 00</p>
-            <div className={styles.introCopy}>
+            <div className={styles.introCopy} data-reveal="focus-reveal">
               <h2 id="light-title">Hikari é luz. <em>O resto é foco.</em></h2>
               <p>
                 Óculos solares e receituários ganham diferentes pontos de vista. A luz conduz
                 a sequência; cada ensaio preserva pessoa, gesto e atmosfera.
               </p>
             </div>
-            <div className={styles.introLens} aria-hidden="true">
-              <span>光</span>
+            <div className={styles.introLens} data-reveal="optical-mask" aria-hidden="true">
+              <BrandIcon className={styles.introMark} sizes="112px" />
               <i />
-              <p>Luz · foco · profundidade</p>
             </div>
           </div>
         </section>
 
         <section className={styles.seriesOne} aria-labelledby="series-one-title">
-          <div className={`site-shell ${styles.sectionHeader}`}>
+          <div className={`site-shell ${styles.sectionHeader}`} data-reveal="line-reveal">
             <div>
-              <p className={styles.darkKicker}>Ensaio 01 · Sol</p>
               <h2 id="series-one-title">Entre o retrato <em>e o detalhe.</em></h2>
             </div>
             <p>
-              Dez imagens, uma única sequência. Deslize para acompanhar o ensaio sem perder
-              o fio entre expressão e produto.
+              Uma sequência contínua entre expressão e produto. Deslize para acompanhar
+              as mudanças de gesto, forma e luz.
             </p>
           </div>
-          <SeriesCarousel items={seriesOne} label="Ensaio um da Ótica Hikari" />
+          <SeriesCarousel items={seriesOne} label="Galeria de retratos e detalhes da Ótica Hikari" />
         </section>
 
         <section className={styles.diptychSection} aria-labelledby="diptych-title">
           <div className={`site-shell ${styles.diptychGrid}`}>
-            <div className={styles.diptychCopy}>
-              <p className={styles.lightKicker}>Ensaio 02 · Gesto</p>
+            <div className={styles.diptychCopy} data-reveal="line-reveal">
               <h2 id="diptych-title">Dois instantes. <em>O mesmo olhar.</em></h2>
               <p>
                 Um díptico para perceber como forma e expressão mudam juntas, sem quebrar a
                 continuidade do ensaio.
               </p>
-              <span aria-hidden="true">02 / 02</span>
             </div>
-            <div className={styles.diptychMedia}>
-              {seriesTwo.map((item, index) => (
+            <div className={styles.diptychMedia} data-reveal="diptych">
+              {seriesTwo.map((item) => (
                 <figure key={item.id} className={styles.diptychImage} data-series="02" data-series-item={item.id}>
                   <Image
                     src={item.src}
@@ -125,7 +179,6 @@ export default function HomePage() {
                     fill
                     sizes="(max-width: 720px) 50vw, (max-width: 1100px) 38vw, 420px"
                   />
-                  <figcaption>0{index + 1}</figcaption>
                 </figure>
               ))}
             </div>
@@ -134,60 +187,53 @@ export default function HomePage() {
 
         <section className={styles.focusSection} aria-labelledby="focus-title">
           <div className={`site-shell ${styles.focusGrid}`}>
-            <div className={styles.focusCopy}>
-              <p className={styles.darkKicker}>Ensaio 03 · Foco variável</p>
+            <div className={styles.focusCopy} data-reveal="focus-reveal">
               <h2 id="focus-title">Uma troca de lente <em>muda o campo.</em></h2>
               <p>
-                Escolha um dos quatro registros. A pessoa e a luz permanecem; o desenho da
-                armação muda o ponto de atenção.
+                A pessoa e a luz permanecem; o desenho da armação muda o ponto de atenção.
               </p>
               <p className={styles.interactionHint}>Deslize ou use as setas</p>
             </div>
-            <FocusGallery items={seriesThree} label="Ensaio três da Ótica Hikari" />
+            <FocusGallery items={seriesThree} label="Galeria de diferentes armações da Ótica Hikari" />
           </div>
         </section>
 
         <section id="loja" className={styles.motionSection} aria-labelledby="motion-title">
           <div className={`site-shell ${styles.motionGrid}`}>
-            <div className={styles.motionCopy}>
-              <p className={styles.lightKicker}>Em movimento</p>
+            <div className={styles.motionCopy} data-reveal="line-reveal">
               <h2 id="motion-title">A luz não fica <em>parada.</em></h2>
               <p>
-                Um registro principal e um fragmento menor, apresentados na escala que cada
-                arquivo suporta. O movimento amplia a leitura sem tomar o lugar da escolha.
+                Entre o gesto e o detalhe, o movimento amplia a leitura sem tomar o lugar
+                da escolha.
               </p>
-              <span>Som desativado · reprodução controlada</span>
             </div>
-            <figure className={styles.primaryVideo}>
+            <figure className={styles.primaryVideo} data-reveal="optical-mask">
               <ControlledVideo
                 src="/video/selection.mp4"
                 poster="/video/selection-poster.jpg"
                 label="Vídeo de uma mulher apresentando óculos solares"
               />
-              <figcaption>Registro 01 / seleção em movimento</figcaption>
             </figure>
-            <figure className={styles.fragmentVideo}>
+            <figure className={styles.fragmentVideo} data-reveal="soft-settle">
               <ControlledVideo
                 src="/video/fragment.mp4"
                 poster="/video/fragment-poster.jpg"
                 label="Fragmento em vídeo com diferentes armações"
                 autoplay={false}
               />
-              <figcaption>Fragmento / arquivo 02</figcaption>
             </figure>
           </div>
         </section>
 
         <section className={styles.seriesFour} aria-labelledby="series-four-title">
-          <div className={`site-shell ${styles.seriesFourHeader}`}>
-            <p className={styles.lightKicker}>Ensaio 04 · Presença</p>
-            <h2 id="series-four-title">Seis enquadramentos, <em>uma narrativa.</em></h2>
+          <div className={`site-shell ${styles.seriesFourHeader}`} data-reveal="line-reveal">
+            <h2 id="series-four-title">Presença em cada <em>enquadramento.</em></h2>
             <p>
-              Do primeiro gesto ao último, a sequência permanece inteira: mesma pessoa,
-              mesma luz, novas formas diante do olhar.
+              A sequência permanece inteira: mesma pessoa, mesma luz, novas formas diante
+              do olhar.
             </p>
           </div>
-          <div className={`site-shell ${styles.editorialGrid}`}>
+          <div className={`site-shell ${styles.editorialGrid}`} data-reveal="editorial">
             {seriesFour.map((item) => (
               <figure key={item.id} className={styles.editorialImage} data-series="04" data-series-item={item.id}>
                 <Image
@@ -196,7 +242,6 @@ export default function HomePage() {
                   fill
                   sizes="(max-width: 600px) 47vw, (max-width: 1000px) 31vw, 410px"
                 />
-                <figcaption>{item.id}</figcaption>
               </figure>
             ))}
           </div>
@@ -204,7 +249,7 @@ export default function HomePage() {
 
         <section id="localizacao" className={styles.locationSection} aria-labelledby="location-title">
           <div className={`site-shell ${styles.locationGrid}`}>
-            <div className={styles.locationCopy}>
+            <div className={styles.locationCopy} data-reveal="line-reveal">
               <p className={styles.darkKicker}>Araguaína · Tocantins</p>
               <h2 id="location-title">No Centro, <em>onde o olhar encontra a luz.</em></h2>
               <address>{fullAddress}</address>
@@ -218,26 +263,33 @@ export default function HomePage() {
                 </a>
               </div>
             </div>
-            <div className={styles.routeDiagram} aria-hidden="true">
-              <svg viewBox="0 0 620 430" fill="none">
-                <path d="M-10 314C82 284 111 215 191 213c92-2 92 89 189 74 70-11 88-99 161-109 33-5 62 4 91 21" />
-                <path d="M83-18c5 77 57 98 45 172-10 62-65 80-61 145 3 54 45 80 43 144" />
-                <path d="M481-19c-24 87 31 119 9 200-20 71-81 97-85 166-2 34 10 62 24 91" />
-              </svg>
-              <span className={styles.routePoint}>光</span>
-              <p>Rua 19 de Novembro <strong>nº 68</strong></p>
-              <small>-7.1922897 · -48.2094709</small>
+            <div className={styles.mapBlock} data-reveal="map">
+              <div className={styles.mapFrame}>
+                <iframe
+                  data-map-iframe
+                  title="Mapa da Ótica Hikari em Araguaína"
+                  src={mapEmbedUrl}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+              </div>
+              <div className={styles.mapCaption}>
+                <span>{fullAddress}</span>
+                <a href={business.mapsUrl} target="_blank" rel="noreferrer">
+                  Abrir no Google Maps <ArrowIcon />
+                </a>
+              </div>
             </div>
           </div>
         </section>
 
         <section className={styles.faqSection} aria-labelledby="faq-title">
           <div className={`site-shell ${styles.faqGrid}`}>
-            <div>
-              <p className={styles.lightKicker}>Informação direta</p>
+            <div data-reveal="focus-reveal">
               <h2 id="faq-title">Antes de <em>visitar.</em></h2>
             </div>
-            <div className={styles.faqList}>
+            <div className={styles.faqList} data-reveal="soft-settle">
               <details>
                 <summary>O que encontro na Ótica Hikari?</summary>
                 <p>Óculos solares e receituários.</p>
@@ -259,8 +311,8 @@ export default function HomePage() {
         </section>
 
         <section className={styles.finalCta} aria-labelledby="final-title">
-          <div className={`site-shell ${styles.finalCtaInner}`}>
-            <p aria-hidden="true">光</p>
+          <div className={`site-shell ${styles.finalCtaInner}`} data-reveal="focus-reveal">
+            <BrandIcon className={styles.finalMark} sizes="48px" />
             <h2 id="final-title">Seu novo olhar pode <em>começar agora.</em></h2>
             <a className="button button-primary" href={getWhatsAppUrl("site")} target="_blank" rel="noreferrer">
               <WhatsAppIcon /> Pedir atendimento no WhatsApp

@@ -1,7 +1,9 @@
 .footer {
   padding: clamp(4rem, 8vw, 7rem) 0 max(1.3rem, env(safe-area-inset-bottom));
   color: var(--ivory);
-  background: #050504;
+  background:
+    radial-gradient(ellipse at 14% 28%, rgba(84, 40, 34, 0.13), transparent 30%),
+    linear-gradient(150deg, var(--black-deep), #0b0907);
   border-top: 1px solid rgba(252, 198, 14, 0.18);
 }
 

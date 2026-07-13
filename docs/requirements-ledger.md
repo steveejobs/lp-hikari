@@ -33,7 +33,7 @@ RQ-031	3D não pode bloquear CTA, leitura ou carregamento inicial	Todas	Todos	P0
 RQ-032	Deve existir fallback sem WebGL	Todas	Todos	P0	aprovado	Implementação integral em CSS/HTML + teste sem JS	entrega final
 RQ-033	Marcas comerciais só entram após confirmação explícita	Todas	Todos	P0	aprovado	Zero referências comerciais em app/lib/public	entrega final
 RQ-034	Referências não podem ter layout, copy ou identidade copiados	Todas	Todos	P0	aprovado	`reference-analysis.md` + comparação visual final	entrega final
-RQ-035	Preview deve ser aprovado antes de qualquer deploy de produção	Todas	Todos	P0	pendente externo	Nenhum deploy de produção executado; URL de preview ainda ausente	—
+RQ-035	Preview deve ser aprovado antes de qualquer deploy de produção	Todas	Todos	P0	pendente externo	Preview protegido criado em `https://lp-hikari-lezoufwsr-bandeirargabriel-6963s-projects.vercel.app`; aguarda aprovação humana	—
 RQ-036	Screenshots, gravações e relatórios não podem entrar no build	Todas	Todos	P1	aprovado	`.vercelignore`; busca no `.next` retornou zero artefatos	entrega final
 RQ-037	Vídeos devem ser muted, playsInline, loop e possuir poster	Todas	Todos	P0	aprovado	Asserções DOM/browser nos dois vídeos	entrega final
 RQ-038	Vídeos devem respeitar saveData e usar poster sem autoplay	Todas	Mobile	P0	aprovado	Teste `saveData` sem requests MP4	entrega final
@@ -52,4 +52,17 @@ RQ-050	O vídeo ruim deve ser fisicamente reduzido, não apenas limitado por CSS
 RQ-051	Logos comerciais não confirmadas não podem entrar no conteúdo nem no bundle público	Todas	Todos	P0	aprovado	Busca zero + brutos removidos após checkpoint	entrega final
 RQ-052	Os viewports 768x1024, 1366x768 e 1440x900 também devem ser validados	Todas	Todos	P0	aprovado	6 testes rota/viewport + capturas correspondentes	entrega final
 
-Resultado: 50 requisitos aprovados com evidência. RQ-012 depende de revisão visual humana; RQ-035 depende de uma URL de preview Vercel e aprovação antes de produção.
+RQ-053	Metadados de produção, rótulos técnicos e numeração decorativa devem sair da interface pública sem alterar IDs e ordem interna	Todas	Todos	P0	aprovado	Teste textual/DOM + 18 capturas em `.qa/refinement-2026-07-13/after/`	refinamento 13/07/2026
+RQ-054	A lente do hero deve percorrer óculos, olhos, maçã do rosto e cabelo em trajetória orgânica fechada, contida e sem salto	/	Todos	P0	aprovado	`lens-cycle-1440x900.webm`; `lens-trajectory.json`; teste repetido 3/3	refinamento 13/07/2026
+RQ-055	A home deve ter entrada curta, não bloqueante e clicável, concluída em até 1,8 s	/	Todos	P0	aprovado	Teste de timing ≤1.800 ms e CTA ≥44 px; gravação inicia na navegação	refinamento 13/07/2026
+RQ-056	As entradas devem usar famílias coerentes e variadas, controladas por tokens centrais e viewport	Todas	Todos	P1	aprovado	Oito famílias auditadas + tokens centrais + 18 capturas	refinamento 13/07/2026
+RQ-057	O refinamento deve reduzir rigidez e preto uniforme sem trocar paleta, tipografia ou direção editorial	Todas	Todos	P0	aprovado	Comparação `before/` × `after/` em mobile, desktop e ultrawide	refinamento 13/07/2026
+RQ-058	A localização da home deve usar mapa real, interativo, lazy, acessível e centralizado nas coordenadas confirmadas	/	Todos	P0	aprovado	`map-interactive-1440.png`; frame com 45 imagens; zoom/pan e coordenadas testados	refinamento 13/07/2026
+RQ-059	A rota /instagram deve continuar compacta e não carregar automaticamente o iframe do mapa	/instagram	Mobile	P0	aprovado	Teste com zero iframe + cinco capturas mobile e CTA de rota visível	refinamento 13/07/2026
+RQ-060	A lente e as entradas devem pausar ou simplificar para offscreen, aba oculta, reduced motion, saveData e touch conforme aplicável	Todas	Todos	P0	aprovado	Testes de offscreen, visibilitychange, touch autônomo, reduced motion e qualidade `lite`	refinamento 13/07/2026
+RQ-061	Mapa e microinterações devem preservar teclado, foco visível, touch, hover e áreas mínimas de toque	Todas	Todos	P0	aprovado	34/34 testes; swipe 5/5; targets ≥44 px; mapa zoom/pan	refinamento 13/07/2026
+RQ-062	A rodada não pode adicionar dependências nem ampliar JavaScript inicial além de ilhas pequenas e justificadas	Todas	Todos	P1	aprovado	Diff zero em package/lock; build estático; MotionController e lente como ilhas locais	refinamento 13/07/2026
+RQ-063	Todos os oito viewports obrigatórios e um ultrawide devem permanecer sem overflow horizontal ou recortes incorretos	Todas	Todos	P0	aprovado	18/18 testes/capturas, duas rotas × nove viewports, sem overflow	refinamento 13/07/2026
+RQ-064	A rodada deve preservar todos os requisitos anteriormente aprovados e não fazer deploy de produção antes do preview	Todas	Todos	P0	aprovado	34/34 funcionais, lint/tipos/build, preview Vercel criado e nenhum deploy de produção	refinamento 13/07/2026
+
+Resultado preservado e ampliado: RQ-053–RQ-064 possuem evidência reproduzível e foram aprovados. RQ-012 continua em revisão visual humana; RQ-035 aguarda a aprovação do preview protegido. Nenhum deploy de produção foi executado.

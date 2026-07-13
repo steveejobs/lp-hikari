@@ -1,4 +1,5 @@
 .qa
+.tmp
 playwright-report
 test-results
 docs

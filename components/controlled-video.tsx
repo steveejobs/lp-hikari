@@ -134,7 +134,7 @@ export function ControlledVideo({ src, poster, label, autoplay = true, className
       />
       <span className={styles.shade} aria-hidden="true" />
       {reducedMotion ? (
-        <span className={styles.reducedLabel}>Imagem estática</span>
+        <span className="sr-only">Versão estática para reduzir movimento</span>
       ) : (
         <button type="button" className={styles.control} onClick={togglePlayback} aria-label={playing ? `Pausar ${label}` : `Reproduzir ${label}`}>
           {playing ? <PauseIcon /> : <PlayIcon />}

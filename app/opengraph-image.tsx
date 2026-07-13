@@ -1,10 +1,16 @@
+/* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 
 export const alt = "Ótica Hikari — O florescer de um novo olhar";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
+  const brandIcon = await readFile(join(process.cwd(), "app", "icon.png"), "base64");
+  const brandIconSrc = `data:image/png;base64,${brandIcon}`;
+
   return new ImageResponse(
     (
       <div
@@ -41,7 +47,7 @@ export default function OpenGraphImage() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 20, color: "#fcc60e", fontSize: 27 }}>
-            <span style={{ fontSize: 54 }}>光</span>
+            <img src={brandIconSrc} width={64} height={64} alt="" />
             <span style={{ letterSpacing: 4, fontFamily: "Arial, sans-serif", fontSize: 18, fontWeight: 700 }}>ÓTICA HIKARI · ARAGUAÍNA</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", maxWidth: 820 }}>

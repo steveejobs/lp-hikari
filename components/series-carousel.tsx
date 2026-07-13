@@ -166,7 +166,15 @@ export function SeriesCarousel({ items, label, autoplayInterval = 5200 }: Series
   }
 
   return (
-    <div ref={rootRef} className={styles.carousel} role="region" aria-roledescription="carrossel" aria-label={label} data-series="01">
+    <div
+      ref={rootRef}
+      className={styles.carousel}
+      role="region"
+      aria-roledescription="carrossel"
+      aria-label={label}
+      data-series="01"
+      data-reveal="horizontal-flow"
+    >
       <div
         id="series-one-track"
         ref={trackRef}
@@ -198,17 +206,17 @@ export function SeriesCarousel({ items, label, autoplayInterval = 5200 }: Series
               sizes="(max-width: 600px) 78vw, (max-width: 1000px) 52vw, 420px"
               className={styles.image}
             />
-            <span className={styles.index} aria-hidden="true">{item.id}</span>
           </article>
         ))}
       </div>
 
       <div className={styles.controls}>
-        <p className={styles.status} aria-live="polite" aria-atomic="true">
-          <span>{String(currentIndex + 1).padStart(2, "0")}</span>
-          <i aria-hidden="true" />
-          {String(items.length).padStart(2, "0")}
+        <p className="sr-only" aria-live="polite" aria-atomic="true">
+          Imagem {currentIndex + 1} de {items.length}
         </p>
+        <span className={styles.progress} aria-hidden="true">
+          <i style={{ transform: `scaleX(${(currentIndex + 1) / items.length})` }} />
+        </span>
         <div className={styles.dots} aria-label="Escolher imagem">
           {items.map((item, index) => (
             <button
