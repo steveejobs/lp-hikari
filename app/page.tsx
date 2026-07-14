@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { CSSProperties } from "react";
+import { Fragment, type CSSProperties } from "react";
 import { BrandIcon } from "@/components/brand-icon";
 import { ControlledVideo } from "@/components/controlled-video";
 import { FocusGallery } from "@/components/focus-gallery";
@@ -36,18 +36,20 @@ function AnimatedTitleLine({
             .reduce((offset, previousWord) => offset + previousWord.length + 1, 0);
 
         return (
-          <span className="hero-word" key={`${word}-${wordIndex}`}>
-            {Array.from(word).map((character, index) => (
-              <span
-                className="hero-char"
-                key={`${character}-${index}`}
-                style={{ "--char-index": index + wordOffset } as CSSProperties}
-              >
-                {character}
-              </span>
-            ))}
+          <Fragment key={`${word}-${wordIndex}`}>
+            <span className="hero-word">
+              {Array.from(word).map((character, index) => (
+                <span
+                  className="hero-char"
+                  key={`${character}-${index}`}
+                  style={{ "--char-index": index + wordOffset } as CSSProperties}
+                >
+                  {character}
+                </span>
+              ))}
+            </span>
             {wordIndex < words.length - 1 ? " " : null}
-          </span>
+          </Fragment>
         );
       })}
     </span>

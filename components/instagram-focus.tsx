@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import {
+  useCallback,
+  useEffect,
   useRef,
   useState,
   type KeyboardEvent,
   type PointerEvent,
-  type TouchEvent,
 } from "react";
 import type { GalleryItem } from "@/lib/galleries";
 import { ArrowIcon } from "@/components/icons";
@@ -16,152 +17,264 @@ type InstagramFocusProps = {
   items: GalleryItem[];
 };
 
-export function InstagramFocus({ items }: InstagramFocusProps) {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const pointerRef = useRef<{ id: number; x: number } | null>(null);
-  const touchRef = useRef<number | null>(null);
-  const active = items[activeIndex];
+type NavigatorWithConnection = Navigator & {
+  connection?: { saveData?: boolean };
+};
 
-  function choose(index: number) {
-    setActiveIndex((index + items.length) % items.length);
+const AUTOPLAY_DELAY = 5_600;
+const RESUME_DELAY = 6_500;
+
+export function InstagramFocus({ items }: InstagramFocusProps) {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<{ id: number; x: number; scrollLeft: number } | null>(null);
+  const scrollEndRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const resumeRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [visible, setVisible] = useState(false);
+  const [pageVisible, setPageVisible] = useState(true);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [saveData, setSaveData] = useState(false);
+  const [interactionPaused, setInteractionPaused] = useState(false);
+
+  const scrollTo = useCallback(
+    (index: number, behavior: ScrollBehavior = "smooth") => {
+      const viewport = viewportRef.current;
+      if (!viewport || items.length === 0) return;
+      const slides = viewport.querySelectorAll<HTMLElement>("[data-gallery-slide]");
+      const normalized = ((index % items.length) + items.length) % items.length;
+      const target = slides[index === items.length ? items.length : normalized];
+      if (!target) return;
+      viewport.scrollTo({ left: target.offsetLeft, behavior });
+      setActiveIndex(normalized);
+    },
+    [items.length],
+  );
+
+  const scheduleResume = useCallback(() => {
+    if (resumeRef.current) clearTimeout(resumeRef.current);
+    resumeRef.current = setTimeout(() => setInteractionPaused(false), RESUME_DELAY);
+  }, []);
+
+  const pauseForInteraction = useCallback(() => {
+    setInteractionPaused(true);
+    scheduleResume();
+  }, [scheduleResume]);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreferences = () => {
+      setReducedMotion(motionQuery.matches);
+      setSaveData(Boolean((navigator as NavigatorWithConnection).connection?.saveData));
+    };
+    const observer = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting && entry.intersectionRatio >= 0.35),
+      { threshold: [0, 0.35, 0.65] },
+    );
+    const onVisibility = () => setPageVisible(document.visibilityState === "visible");
+
+    updatePreferences();
+    onVisibility();
+    observer.observe(root);
+    motionQuery.addEventListener("change", updatePreferences);
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      observer.disconnect();
+      motionQuery.removeEventListener("change", updatePreferences);
+      document.removeEventListener("visibilitychange", onVisibility);
+      if (resumeRef.current) clearTimeout(resumeRef.current);
+      if (scrollEndRef.current) clearTimeout(scrollEndRef.current);
+    };
+  }, []);
+
+  const running =
+    visible && pageVisible && !reducedMotion && !saveData && !interactionPaused && items.length > 1;
+
+  useEffect(() => {
+    if (!running) return;
+    const timer = window.setTimeout(() => {
+      scrollTo(activeIndex === items.length - 1 ? items.length : activeIndex + 1);
+    }, AUTOPLAY_DELAY);
+    return () => window.clearTimeout(timer);
+  }, [activeIndex, items.length, running, scrollTo]);
+
+  function handleScroll() {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const slides = Array.from(
+      viewport.querySelectorAll<HTMLElement>("[data-gallery-slide]"),
+    );
+    if (slides.length === 0) return;
+    const closest = slides.reduce(
+      (best, slide, index) => {
+        const distance = Math.abs(slide.offsetLeft - viewport.scrollLeft);
+        return distance < best.distance ? { index, distance } : best;
+      },
+      { index: 0, distance: Number.POSITIVE_INFINITY },
+    );
+    setActiveIndex(closest.index === items.length ? 0 : closest.index);
+
+    if (scrollEndRef.current) clearTimeout(scrollEndRef.current);
+    scrollEndRef.current = setTimeout(() => {
+      if (closest.index === items.length) {
+        viewport.scrollTo({ left: slides[0]?.offsetLeft ?? 0, behavior: "auto" });
+        setActiveIndex(0);
+      }
+    }, 180);
   }
 
   function handleKey(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key === "ArrowRight") {
       event.preventDefault();
-      choose(activeIndex + 1);
+      pauseForInteraction();
+      scrollTo(activeIndex === items.length - 1 ? items.length : activeIndex + 1);
     } else if (event.key === "ArrowLeft") {
       event.preventDefault();
-      choose(activeIndex - 1);
+      pauseForInteraction();
+      scrollTo(activeIndex - 1);
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      pauseForInteraction();
+      scrollTo(0);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      pauseForInteraction();
+      scrollTo(items.length - 1);
     }
   }
 
-  function begin(event: PointerEvent<HTMLDivElement>) {
+  function beginDrag(event: PointerEvent<HTMLDivElement>) {
+    pauseForInteraction();
     if (event.pointerType === "touch") return;
-    pointerRef.current = { id: event.pointerId, x: event.clientX };
+    dragRef.current = {
+      id: event.pointerId,
+      x: event.clientX,
+      scrollLeft: event.currentTarget.scrollLeft,
+    };
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
-  function move(event: PointerEvent<HTMLDivElement>) {
-    if (event.pointerType === "touch") return;
-    const pointer = pointerRef.current;
-    if (!pointer || pointer.id !== event.pointerId) return;
-    const delta = event.clientX - pointer.x;
-    if (Math.abs(delta) < 34) return;
-    pointerRef.current = null;
-    choose(activeIndex + (delta < 0 ? 1 : -1));
+  function moveDrag(event: PointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current;
+    if (!drag || drag.id !== event.pointerId) return;
+    event.preventDefault();
+    event.currentTarget.scrollLeft = drag.scrollLeft - (event.clientX - drag.x);
   }
 
-  function finish(event: PointerEvent<HTMLDivElement>) {
-    if (event.pointerType === "touch") return;
-    const pointer = pointerRef.current;
-    if (!pointer || pointer.id !== event.pointerId) return;
-    const delta = event.clientX - pointer.x;
-    pointerRef.current = null;
-    if (Math.abs(delta) >= 34) choose(activeIndex + (delta < 0 ? 1 : -1));
+  function endDrag(event: PointerEvent<HTMLDivElement>) {
+    if (dragRef.current?.id === event.pointerId) dragRef.current = null;
+    scheduleResume();
   }
 
-  function beginTouch(event: TouchEvent<HTMLDivElement>) {
-    touchRef.current = event.touches[0]?.clientX ?? null;
-  }
-
-  function moveTouch(event: TouchEvent<HTMLDivElement>) {
-    const start = touchRef.current;
-    const current = event.touches[0]?.clientX;
-    if (start === null || current === undefined) return;
-    const delta = current - start;
-    if (Math.abs(delta) < 34) return;
-    touchRef.current = null;
-    choose(activeIndex + (delta < 0 ? 1 : -1));
-  }
-
-  function finishTouch(event: TouchEvent<HTMLDivElement>) {
-    const start = touchRef.current;
-    const current = event.changedTouches[0]?.clientX;
-    touchRef.current = null;
-    if (start === null || current === undefined) return;
-    const delta = current - start;
-    if (Math.abs(delta) >= 34) choose(activeIndex + (delta < 0 ? 1 : -1));
-  }
+  if (items.length === 0) return null;
 
   return (
-    <div className={styles.wrap} data-series="04">
+    <div
+      ref={rootRef}
+      className={styles.wrap}
+      data-series="04"
+      data-gallery-running={running ? "true" : "false"}
+      data-gallery-visible={visible ? "true" : "false"}
+      data-gallery-reduced={reducedMotion ? "true" : "false"}
+      data-gallery-paused={interactionPaused ? "true" : "false"}
+      data-active-item={items[activeIndex]?.id}
+    >
       <div
-        className={styles.stage}
+        ref={viewportRef}
+        className={styles.viewport}
         tabIndex={0}
         role="region"
-        aria-label="Seleção visual. Deslize ou use as setas para mudar o foco."
+        aria-roledescription="galeria"
+        aria-label="Seleção editorial de óculos solares. Deslize, arraste ou use as setas."
         onKeyDown={handleKey}
-        onPointerDown={begin}
-        onPointerMove={move}
-        onPointerUp={finish}
-        onPointerCancel={() => {
-          pointerRef.current = null;
-        }}
-        onTouchStart={beginTouch}
-        onTouchMove={moveTouch}
-        onTouchEnd={finishTouch}
-        onTouchCancel={() => {
-          touchRef.current = null;
-        }}
+        onPointerDown={beginDrag}
+        onPointerMove={moveDrag}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onScroll={handleScroll}
+        onWheel={pauseForInteraction}
       >
-        <Image
-          key={`base-${active.id}`}
-          src={active.src}
-          alt={active.alt}
-          fill
-          preload={activeIndex === 0}
-          fetchPriority={activeIndex === 0 ? "high" : "auto"}
-          sizes="(max-width: 540px) 88vw, 420px"
-          className={styles.image}
-        />
-        <div className={styles.refracted} aria-hidden="true">
-          <Image
-            key={`refracted-${active.id}`}
-            src={active.src}
-            alt=""
-            fill
-            sizes="(max-width: 540px) 88vw, 420px"
-            className={styles.refractedImage}
-          />
+        <div className={styles.track}>
+          {[...items, items[0]].map((item, index) => {
+            const clone = index === items.length;
+            return (
+              <figure
+                className={styles.slide}
+                data-gallery-slide
+                data-series-item={clone ? undefined : item.id}
+                data-active={!clone && index === activeIndex ? "true" : "false"}
+                aria-hidden={clone ? "true" : undefined}
+                key={clone ? `${item.id}-loop` : item.id}
+              >
+                <Image
+                  src={item.src}
+                  alt={clone ? "" : item.alt}
+                  fill
+                  preload={index === 0}
+                  loading={index === 0 ? undefined : "lazy"}
+                  fetchPriority={index === 0 ? "high" : "auto"}
+                  sizes="(max-width: 540px) 76vw, (max-width: 900px) 52vw, 360px"
+                  className={styles.image}
+                  draggable={false}
+                />
+                <span className={styles.opticalTrace} aria-hidden="true" />
+              </figure>
+            );
+          })}
+          <span className={styles.endSpace} aria-hidden="true" />
         </div>
-        <span className={styles.lensEdge} aria-hidden="true" />
-        <p className="sr-only" aria-live="polite" aria-atomic="true">
-          Exibindo {active.alt}
-        </p>
+      </div>
 
+      <div className={styles.controls}>
         <div className={styles.arrows}>
-          <button type="button" onClick={() => choose(activeIndex - 1)} aria-label="Imagem anterior">
+          <button
+            type="button"
+            onClick={() => {
+              pauseForInteraction();
+              scrollTo(activeIndex - 1);
+            }}
+            aria-label="Imagem anterior"
+          >
             <ArrowIcon />
           </button>
-          <button type="button" onClick={() => choose(activeIndex + 1)} aria-label="Próxima imagem">
+          <button
+            type="button"
+            onClick={() => {
+              pauseForInteraction();
+              scrollTo(activeIndex === items.length - 1 ? items.length : activeIndex + 1);
+            }}
+            aria-label="Próxima imagem"
+          >
             <ArrowIcon />
           </button>
         </div>
+
+        <div className={styles.progress} aria-label="Escolher imagem">
+          {items.map((item, index) => (
+            <button
+              key={item.id}
+              type="button"
+              data-active={index === activeIndex}
+              onClick={() => {
+                pauseForInteraction();
+                scrollTo(index);
+              }}
+              aria-label={`Mostrar ${item.alt}`}
+              aria-current={index === activeIndex ? "true" : undefined}
+            >
+              <span />
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className={styles.selector} aria-label="Escolher imagem">
-        {items.map((item, index) => (
-          <button
-            key={item.id}
-            type="button"
-            data-active={index === activeIndex}
-            data-series-item={item.id}
-            onClick={() => choose(index)}
-            aria-label={`Mostrar ${item.alt}`}
-            aria-current={index === activeIndex ? "true" : undefined}
-          >
-            <span className={styles.selectorThumb}>
-              <Image
-                src={item.src}
-                alt=""
-                fill
-                sizes="(max-width: 540px) 28vw, 130px"
-              />
-            </span>
-          </button>
-        ))}
-      </div>
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {items[activeIndex]?.alt}
+      </p>
     </div>
   );
 }

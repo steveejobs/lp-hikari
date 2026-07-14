@@ -1,150 +1,200 @@
 .wrap {
   position: relative;
-  width: min(100%, 27rem);
+  width: min(100%, 29rem);
   margin-inline: auto;
 }
 
-.stage {
+.viewport {
   position: relative;
-  aspect-ratio: 4 / 4.65;
-  overflow: hidden;
-  isolation: isolate;
-  clip-path: polygon(5% 0, 100% 3%, 94% 100%, 0 95%);
-  background: #26221d;
-  touch-action: pan-y;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  touch-action: pan-x pan-y;
+  cursor: grab;
 }
 
-.image,
-.refractedImage {
-  object-fit: cover;
-  object-position: center 32%;
+.viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.viewport:active {
+  cursor: grabbing;
+}
+
+.track {
+  display: flex;
+  gap: 0.62rem;
+}
+
+.endSpace {
+  flex: 0 0 18%;
+}
+
+.slide {
+  position: relative;
+  flex: 0 0 82%;
+  aspect-ratio: 4 / 4.8;
+  margin: 0;
+  overflow: hidden;
+  isolation: isolate;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  clip-path: polygon(4% 0, 100% 2.5%, 96% 100%, 0 96%);
+  background: #26221d;
+  transform: scale(0.975);
+  transform-origin: center center;
+  transition:
+    transform 560ms var(--ease-optic),
+    filter 560ms var(--ease-optic),
+    opacity 560ms ease;
+}
+
+.slide:nth-child(even) {
+  clip-path: polygon(0 2%, 96% 0, 100% 96%, 3% 100%);
+  transform: translateY(0.85rem) scale(0.95);
 }
 
 .image {
-  animation: focus-in 480ms var(--ease-optic) both;
+  object-fit: cover;
+  object-position: center 32%;
+  user-select: none;
+  transition: transform 1.1s var(--ease-optic), filter 560ms var(--ease-optic);
 }
 
-.stage::after {
+.slide::after {
   content: "";
-  position: absolute;
-  z-index: 3;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(180deg, transparent 50%, rgba(8, 8, 6, 0.52));
-}
-
-.refracted {
   position: absolute;
   z-index: 2;
   inset: 0;
-  clip-path: polygon(0 43%, 100% 35%, 100% 56%, 0 64%);
   pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent 62%, rgba(8, 8, 6, 0.44)),
+    linear-gradient(104deg, transparent 42%, rgba(252, 198, 14, 0.08) 48%, transparent 55%);
 }
 
-.refractedImage {
-  transform: translateX(5px) scale(1.018);
-  filter: saturate(1.18) contrast(1.06);
-  animation: focus-in 480ms var(--ease-optic) both;
-}
-
-.lensEdge {
+.opticalTrace {
   position: absolute;
-  z-index: 4;
-  width: 55%;
+  z-index: 3;
+  width: 58%;
   aspect-ratio: 1;
-  right: -17%;
-  top: 20%;
-  border: 1px solid rgba(252, 198, 14, 0.75);
+  right: -22%;
+  top: 17%;
+  border: 1px solid rgba(252, 198, 14, 0.62);
   border-radius: 50%;
-  box-shadow: inset 0 0 0 0.5rem rgba(252, 198, 14, 0.035);
+  box-shadow: inset 0 0 0 0.45rem rgba(252, 198, 14, 0.025);
   pointer-events: none;
+}
+
+.controls {
+  min-height: 3rem;
+  margin-top: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .arrows {
-  position: absolute;
-  z-index: 6;
-  right: 0.65rem;
-  bottom: 0.6rem;
   display: flex;
   gap: 0.38rem;
 }
 
 .arrows button {
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 2.85rem;
+  height: 2.85rem;
   padding: 0;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(243, 239, 229, 0.35);
+  border: 1px solid rgba(243, 239, 229, 0.28);
   border-radius: 50%;
   color: var(--ivory);
-  background: rgba(8, 8, 6, 0.42);
-  backdrop-filter: blur(8px);
+  background: rgba(243, 239, 229, 0.035);
+  cursor: pointer;
+  transition:
+    border-color var(--motion-fast) ease,
+    background var(--motion-fast) ease,
+    transform var(--motion-fast) var(--ease-focus);
 }
 
 .arrows button:first-child svg {
   transform: rotate(180deg);
 }
 
+.arrows button:hover {
+  border-color: rgba(252, 198, 14, 0.72);
+  background: rgba(252, 198, 14, 0.08);
+}
+
+.arrows button:active {
+  transform: scale(0.94);
+}
+
 .arrows svg {
   width: 1rem;
 }
 
-.selector {
-  margin-top: 0.75rem;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.42rem;
+.progress {
+  flex: 1 0 100%;
+  order: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.28rem;
 }
 
-.selector button {
-  position: relative;
-  min-height: 3.7rem;
+.progress button {
+  min-width: 2.85rem;
+  min-height: 2.85rem;
+  flex: 1;
   padding: 0;
-  border: 1px solid rgba(243, 239, 229, 0.15);
-  overflow: hidden;
-  background: #26221d;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
   cursor: pointer;
+}
+
+.progress span {
+  width: 100%;
+  height: 2px;
+  display: block;
+  overflow: hidden;
+  background: rgba(243, 239, 229, 0.2);
   transition:
-    border-color var(--motion-fast) ease,
-    opacity var(--motion-fast) ease,
+    height var(--motion-fast) ease,
+    background var(--motion-fast) ease,
     transform var(--motion-fast) var(--ease-focus);
 }
 
-.selectorThumb {
-  position: absolute;
-  inset: 0;
-  display: block;
+.progress button[data-active="true"] span {
+  height: 3px;
+  background: var(--gold);
+  transform: scaleX(1.08);
 }
 
-.selectorThumb img {
-  object-fit: cover;
-  object-position: center 32%;
-}
+@media (max-width: 540px) {
+  .track {
+    gap: 0.5rem;
+  }
 
-.selector button:not([data-active="true"]) {
-  opacity: 0.48;
-}
+  .slide {
+    flex-basis: 78%;
+  }
 
-.selector button[data-active="true"] {
-  border-color: var(--gold);
-  opacity: 1;
-  transform: translateY(-2px);
-  box-shadow: 0 0.6rem 1.4rem rgba(0, 0, 0, 0.18);
-}
-
-@keyframes focus-in {
-  from { opacity: 0.58; filter: blur(5px) saturate(0.7); }
-  to { opacity: 1; filter: blur(0) saturate(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .image,
-  .refractedImage {
-    animation: none;
+  .viewport {
+    scroll-behavior: auto;
   }
 
-  .selector button {
+  .slide,
+  .image,
+  .arrows button,
+  .progress span {
     transition: none;
   }
 }

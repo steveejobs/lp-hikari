@@ -29,10 +29,17 @@ const messages: Record<ContactSource, string> = {
     "Olá! Vim pelo Instagram da Ótica Hikari e quero atendimento para escolher meus óculos.",
 };
 
-export function getWhatsAppUrl(source: ContactSource) {
+export const instagramProductMessages = {
+  prescription:
+    "Olá! Vim pelo Instagram da Ótica Hikari e quero atendimento para escolher meus óculos de grau.",
+  solar:
+    "Olá! Vim pelo Instagram da Ótica Hikari e quero atendimento para escolher meus óculos solares.",
+} as const;
+
+export function getWhatsAppUrl(source: ContactSource, message = messages[source]) {
   const params = new URLSearchParams({
     phone: business.phoneE164,
-    text: messages[source],
+    text: message,
     utm_source: source === "instagram" ? "instagram" : "website",
     utm_medium: source === "instagram" ? "social" : "organic",
     utm_campaign: "hikari_atendimento",

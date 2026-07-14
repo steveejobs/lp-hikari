@@ -2,9 +2,15 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { BrandIcon } from "@/components/brand-icon";
+import { ControlledVideo } from "@/components/controlled-video";
 import { ArrowIcon, InstagramIcon, RouteIcon, WhatsAppIcon } from "@/components/icons";
 import { InstagramFocus } from "@/components/instagram-focus";
-import { business, fullAddress, getWhatsAppUrl } from "@/lib/business";
+import {
+  business,
+  fullAddress,
+  getWhatsAppUrl,
+  instagramProductMessages,
+} from "@/lib/business";
 import { seriesFour } from "@/lib/galleries";
 import styles from "./instagram.module.css";
 
@@ -60,9 +66,70 @@ export default function InstagramPage() {
           <div className={styles.visual}>
             <p>
               <BrandIcon className={styles.hintMark} sizes="18px" />
-              deslize para mudar o foco
+              em movimento — deslize para explorar
             </p>
-            <InstagramFocus items={seriesFour.slice(0, 3)} />
+            <InstagramFocus items={seriesFour} />
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.products} aria-labelledby="products-title">
+        <div className={styles.productsInner} data-reveal="editorial">
+          <header className={styles.productsHeading}>
+            <div>
+              <p>Para o seu jeito de olhar</p>
+              <h2 id="products-title">Solar e receituário, com a mesma presença.</h2>
+            </div>
+          </header>
+
+          <div className={styles.productChoices}>
+            <article className={styles.productChoice}>
+              <div>
+                <h3>Óculos receituários</h3>
+                <p>Armações para acompanhar sua rotina e seu jeito de ver.</p>
+              </div>
+              <a
+                href={getWhatsAppUrl("instagram", instagramProductMessages.prescription)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <WhatsAppIcon />
+                Quero óculos de grau
+              </a>
+            </article>
+
+            <article className={styles.productChoice}>
+              <div>
+                <h3>Óculos solares</h3>
+                <p>Proteção, expressão e novas formas de olhar.</p>
+              </div>
+              <a
+                href={getWhatsAppUrl("instagram", instagramProductMessages.solar)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <WhatsAppIcon />
+                Quero óculos solar
+              </a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.motion} aria-labelledby="motion-title">
+        <div className={styles.motionInner} data-reveal="optical-mask">
+          <div className={styles.motionCopy}>
+            <h2 id="motion-title">Forma, gesto e luz <em>em movimento.</em></h2>
+            <p>Os óculos acompanham a expressão — de perto, com tempo e leveza.</p>
+          </div>
+          <div className={styles.editorialFrame} data-instagram-video>
+            <ControlledVideo
+              className={styles.editorialVideo}
+              src="/video/selection.mp4"
+              poster="/video/selection-poster.jpg"
+              label="Filme editorial da Ótica Hikari com modelo usando óculos"
+              preload="metadata"
+            />
           </div>
         </div>
       </section>

@@ -10,6 +10,7 @@ type ControlledVideoProps = {
   label: string;
   autoplay?: boolean;
   className?: string;
+  preload?: "none" | "metadata";
 };
 
 type NavigatorWithConnection = Navigator & {
@@ -18,7 +19,14 @@ type NavigatorWithConnection = Navigator & {
 
 const PLAY_EVENT = "hikari:video-play";
 
-export function ControlledVideo({ src, poster, label, autoplay = true, className }: ControlledVideoProps) {
+export function ControlledVideo({
+  src,
+  poster,
+  label,
+  autoplay = true,
+  className,
+  preload = "none",
+}: ControlledVideoProps) {
   const id = useId();
   const rootRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -29,6 +37,9 @@ export function ControlledVideo({ src, poster, label, autoplay = true, className
   const saveDataRef = useRef(false);
   const [playing, setPlaying] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [saveData, setSaveData] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [effectivePreload, setEffectivePreload] = useState<"none" | "metadata">("none");
 
   const pause = useCallback(() => {
     const video = videoRef.current;
@@ -38,7 +49,12 @@ export function ControlledVideo({ src, poster, label, autoplay = true, className
 
   const play = useCallback(async () => {
     const video = videoRef.current;
-    if (!video || reducedRef.current || document.visibilityState !== "visible") return;
+    if (
+      !video ||
+      reducedRef.current ||
+      saveDataRef.current ||
+      document.visibilityState !== "visible"
+    ) return;
     window.dispatchEvent(new CustomEvent(PLAY_EVENT, { detail: id }));
     try {
       await video.play();
@@ -53,12 +69,6 @@ export function ControlledVideo({ src, poster, label, autoplay = true, className
     if (!root || !video) return;
 
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const updatePreferences = () => {
-      reducedRef.current = motionQuery.matches;
-      saveDataRef.current = Boolean((navigator as NavigatorWithConnection).connection?.saveData);
-      setReducedMotion(motionQuery.matches);
-      if (motionQuery.matches) pause();
-    };
     const updatePlayback = () => {
       const eligible =
         autoplay &&
@@ -69,6 +79,24 @@ export function ControlledVideo({ src, poster, label, autoplay = true, className
         !saveDataRef.current;
       if (eligible) void play();
       else pause();
+    };
+    const updatePreferences = () => {
+      const shouldReduce = motionQuery.matches;
+      const shouldSaveData = Boolean(
+        (navigator as NavigatorWithConnection).connection?.saveData,
+      );
+      reducedRef.current = shouldReduce;
+      saveDataRef.current = shouldSaveData;
+      setReducedMotion(shouldReduce);
+      setSaveData(shouldSaveData);
+
+      const nextPreload = shouldReduce || shouldSaveData ? "none" : preload;
+      setEffectivePreload(nextPreload);
+      if (video.preload !== nextPreload) {
+        video.preload = nextPreload;
+        if (nextPreload === "metadata") video.load();
+      }
+      updatePlayback();
     };
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -87,6 +115,7 @@ export function ControlledVideo({ src, poster, label, autoplay = true, className
       if (detail !== id) pause();
     };
 
+    pageVisibleRef.current = document.visibilityState === "visible";
     updatePreferences();
     observer.observe(root);
     motionQuery.addEventListener("change", updatePreferences);
@@ -104,10 +133,10 @@ export function ControlledVideo({ src, poster, label, autoplay = true, className
       window.removeEventListener(PLAY_EVENT, onPeerPlay);
       video.pause();
     };
-  }, [autoplay, id, pause, play]);
+  }, [autoplay, id, pause, play, preload]);
 
   function togglePlayback() {
-    if (reducedMotion) return;
+    if (reducedMotion || saveData) return;
     if (playing) {
       userPausedRef.current = true;
       pause();
@@ -118,7 +147,14 @@ export function ControlledVideo({ src, poster, label, autoplay = true, className
   }
 
   return (
-    <div ref={rootRef} className={`${styles.frame}${className ? ` ${className}` : ""}`}>
+    <div
+      ref={rootRef}
+      className={`${styles.frame}${className ? ` ${className}` : ""}`}
+      data-video-playing={playing ? "true" : "false"}
+      data-video-ready={ready ? "true" : "false"}
+      data-video-reduced={reducedMotion ? "true" : "false"}
+      data-video-save-data={saveData ? "true" : "false"}
+    >
       <video
         ref={videoRef}
         src={src}
@@ -126,17 +162,29 @@ export function ControlledVideo({ src, poster, label, autoplay = true, className
         muted
         playsInline
         loop
-        preload="none"
+        preload={effectivePreload}
         disablePictureInPicture
         aria-label={label}
+        onCanPlay={() => setReady(true)}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
-      />
+      >
+        Seu navegador não suporta vídeo HTML. O poster editorial permanece disponível.
+      </video>
       <span className={styles.shade} aria-hidden="true" />
-      {reducedMotion ? (
-        <span className="sr-only">Versão estática para reduzir movimento</span>
+      {reducedMotion || saveData ? (
+        <span className="sr-only">
+          {reducedMotion
+            ? "Versão estática para reduzir movimento"
+            : "Versão estática para economizar dados"}
+        </span>
       ) : (
-        <button type="button" className={styles.control} onClick={togglePlayback} aria-label={playing ? `Pausar ${label}` : `Reproduzir ${label}`}>
+        <button
+          type="button"
+          className={styles.control}
+          onClick={togglePlayback}
+          aria-label={playing ? `Pausar ${label}` : `Reproduzir ${label}`}
+        >
           {playing ? <PauseIcon /> : <PlayIcon />}
         </button>
       )}

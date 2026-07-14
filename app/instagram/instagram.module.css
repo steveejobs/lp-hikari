@@ -216,6 +216,214 @@
   flex: 0 0 auto;
 }
 
+.products {
+  padding:
+    clamp(4.8rem, 10vw, 8rem)
+    max(1rem, env(safe-area-inset-right))
+    clamp(4.8rem, 10vw, 8rem)
+    max(1rem, env(safe-area-inset-left));
+  color: var(--black);
+  background:
+    radial-gradient(ellipse at 8% 18%, rgba(252, 198, 14, 0.09), transparent 30rem),
+    var(--ivory-warm);
+}
+
+.productsInner {
+  width: min(100%, 65rem);
+  margin-inline: auto;
+}
+
+.productsHeading {
+  max-width: 47rem;
+}
+
+.productsHeading p {
+  margin: 0 0 0.65rem;
+  color: var(--gold-ink);
+  font-size: 0.61rem;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.productsHeading h2 {
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2.9rem, 6vw, 5.6rem);
+  font-weight: 390;
+  letter-spacing: -0.048em;
+  line-height: 0.92;
+}
+
+.productChoices {
+  margin-top: clamp(2.6rem, 6vw, 5rem);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid rgba(8, 8, 6, 0.2);
+  border-bottom: 1px solid rgba(8, 8, 6, 0.2);
+}
+
+.productChoice {
+  min-height: 18rem;
+  margin: 0;
+  padding: clamp(1.6rem, 4vw, 3.2rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2.5rem;
+}
+
+.productChoice + .productChoice {
+  border-left: 1px solid rgba(8, 8, 6, 0.2);
+}
+
+.productChoice:nth-child(2) {
+  background: linear-gradient(140deg, rgba(84, 40, 34, 0.055), transparent 68%);
+}
+
+.productChoice h3 {
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2.15rem, 4.2vw, 3.7rem);
+  font-weight: 420;
+  letter-spacing: -0.042em;
+  line-height: 0.96;
+}
+
+.productChoice p {
+  max-width: 25rem;
+  margin: 0.85rem 0 0;
+  color: rgba(8, 8, 6, 0.63);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.productChoice a {
+  min-height: 3.25rem;
+  padding: 0.75rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border: 1px solid rgba(8, 8, 6, 0.3);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 850;
+  transition:
+    color var(--motion-fast) ease,
+    border-color var(--motion-fast) ease,
+    background var(--motion-fast) ease,
+    transform var(--motion-fast) var(--ease-focus);
+}
+
+.productChoice a:hover {
+  color: var(--black);
+  border-color: var(--gold);
+  background: var(--gold);
+  transform: translateY(-2px);
+}
+
+.productChoice a:active {
+  transform: scale(0.98);
+}
+
+.productChoice svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.motion {
+  padding:
+    clamp(5rem, 11vw, 9rem)
+    max(1rem, env(safe-area-inset-right))
+    clamp(5rem, 11vw, 9rem)
+    max(1rem, env(safe-area-inset-left));
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 70% 48%, rgba(252, 198, 14, 0.085), transparent 29rem),
+    conic-gradient(from 210deg at 65% 46%, transparent, rgba(84, 40, 34, 0.16), transparent 25%),
+    linear-gradient(150deg, var(--black-deep), var(--black-warm));
+}
+
+.motionInner {
+  width: min(100%, 65rem);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.85fr) minmax(18rem, 0.65fr);
+  align-items: center;
+  gap: clamp(3rem, 10vw, 8rem);
+}
+
+.motionCopy h2 {
+  max-width: 10ch;
+  margin: 1.2rem 0 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3rem, 6vw, 5.8rem);
+  font-weight: 390;
+  letter-spacing: -0.048em;
+  line-height: 0.9;
+}
+
+.motionCopy h2 em {
+  display: block;
+  color: var(--gold);
+  font-weight: 320;
+}
+
+.motionCopy p {
+  max-width: 26rem;
+  margin: 1.2rem 0 0;
+  color: rgba(243, 239, 229, 0.58);
+  font-size: 0.86rem;
+  line-height: 1.7;
+}
+
+.editorialFrame {
+  position: relative;
+  width: min(100%, 23rem);
+  justify-self: end;
+}
+
+.editorialFrame::before {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  inset: -0.7rem 0.7rem 0.7rem -0.7rem;
+  border-top: 1px solid rgba(252, 198, 14, 0.62);
+  border-left: 1px solid rgba(252, 198, 14, 0.34);
+  clip-path: polygon(0 0, 84% 0, 84% 1px, 1px 1px, 1px 72%, 0 72%);
+  pointer-events: none;
+}
+
+.editorialFrame::after {
+  content: "";
+  position: absolute;
+  z-index: 4;
+  top: -6%;
+  bottom: -6%;
+  left: -42%;
+  width: 24%;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, rgba(252, 198, 14, 0.28), transparent);
+  transform: skewX(-10deg);
+}
+
+.motionInner[data-reveal-state="visible"] .editorialFrame::after {
+  animation: editorialLightTrace 1.05s 180ms var(--ease-light) both;
+}
+
+.editorialVideo {
+  aspect-ratio: 9 / 16;
+  clip-path: polygon(0 2%, 96% 0, 100% 96%, 4% 100%);
+  box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.28);
+}
+
+.editorialVideo video {
+  object-position: center center;
+}
+
 .visit {
   padding: clamp(4.5rem, 11vw, 8rem) max(1rem, env(safe-area-inset-right)) clamp(4.5rem, 11vw, 8rem) max(1rem, env(safe-area-inset-left));
   color: var(--black);
@@ -459,6 +667,12 @@
   to { transform: scaleX(0) skewX(-2.5deg); }
 }
 
+@keyframes editorialLightTrace {
+  0% { opacity: 0; transform: translateX(0) skewX(-10deg); }
+  24% { opacity: 0.82; }
+  100% { opacity: 0; transform: translateX(690%) skewX(-10deg); }
+}
+
 @media (max-width: 720px) {
   .hero {
     min-height: max(100svh, 50rem);
@@ -510,6 +724,47 @@
   .visual {
     width: min(100%, 23rem);
     justify-self: center;
+  }
+
+  .productsHeading {
+    max-width: none;
+  }
+
+  .productChoices {
+    grid-template-columns: 1fr;
+  }
+
+  .productChoice {
+    min-height: 15rem;
+    padding: 1.5rem 0;
+  }
+
+  .productChoice + .productChoice {
+    border-top: 1px solid rgba(8, 8, 6, 0.2);
+    border-left: 0;
+  }
+
+  .productChoice:nth-child(2) {
+    padding-inline: 1rem;
+    margin-inline: -1rem;
+  }
+
+  .productChoice a {
+    width: 100%;
+  }
+
+  .motionInner {
+    grid-template-columns: 1fr;
+    gap: 2.8rem;
+  }
+
+  .motionCopy h2 {
+    font-size: clamp(3rem, 14vw, 4.5rem);
+  }
+
+  .editorialFrame {
+    width: 74%;
+    justify-self: end;
   }
 
   .visitInner {
@@ -581,5 +836,14 @@
   .visual::after {
     display: none;
     animation: none;
+  }
+
+  .editorialFrame::after {
+    display: none;
+    animation: none;
+  }
+
+  .productChoice a {
+    transition: none;
   }
 }

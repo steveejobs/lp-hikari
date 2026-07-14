@@ -62,6 +62,49 @@ Matriz registrada antes das alterações desta rodada. Os requisitos RQ-053–RQ
 
 O preview foi criado em `https://lp-hikari-lezoufwsr-bandeirargabriel-6963s-projects.vercel.app`; `/` e `/instagram` respondem 200, mas a política do projeto exige login Vercel. A aprovação externa continua separada do deploy de produção, e nenhum deploy de produção foi executado nesta rodada.
 
+## Correção controlada de H1 e rota social — 13/07/2026
+
+Matriz registrada antes das alterações. RQ-065–RQ-070 permanecem em `em implementação` até existirem testes e evidências reproduzíveis.
+
+| Arquivo / domínio | Componentes | Rotas | Requisitos | Limite da mudança | Evidência obrigatória |
+|---|---|---|---|---|---|
+| `app/page.tsx`, `app/globals.css` | `AnimatedTitleLine`, H1 do hero | `/` | RQ-026–027, 055–056, 065–066, 070 | corrigir a separação estrutural entre palavras sem trocar texto, tipografia, composição, lente ou sequência do hero | DOM e accessible name, JS desativado, reduced motion, zoom 200%, fontes e oito viewports |
+| `components/instagram-focus.tsx`, `components/instagram-focus.module.css` | galeria social | `/instagram` | RQ-014–015, 020–024, 028–030, 040, 046, 060–063, 067, 070 | manter a série e sua ordem; adicionar somente movimento automático, preview adjacente, interação e progresso sem números | autoplay, swipe, drag, pausa/retomada, offscreen, aba oculta, reduced motion, lazy loading e loop |
+| `app/instagram/page.tsx`, `app/instagram/instagram.module.css` | escolhas de produto, vídeo editorial e ritmo da rota | `/instagram` | RQ-004–008, 016–019, 023–025, 037–041, 045, 059–060, 068–070 | preservar WhatsApp e rota na primeira dobra, endereço, identidade e experiência compacta; não inserir claims nem mapa | cinco mobiles, tablet e desktops; CTAs contextuais; poster/vídeo; comprimento e overflow |
+| `components/controlled-video.tsx`, `components/controlled-video.module.css` | lifecycle do vídeo compartilhado | `/`, `/instagram` | RQ-018–019, 022, 037–038, 049–050, 060, 069–070 | acrescentar configuração de preload e estado de reprodução sem regredir os dois vídeos da home | single-active, metadata, poster, viewport, aba oculta, reduced motion, saveData e fallback |
+| `lib/business.ts` | gerador de URL do WhatsApp | `/instagram` | RQ-005, 007–008, 045, 068 | aceitar mensagem contextual explícita preservando todas as URLs existentes | decodificação dos dois hrefs e teste factual |
+| `public/video/selection.mp4`, `public/video/selection-poster.jpg` | mídia existente, sem novo download | `/instagram` | RQ-016, 030, 037–040, 069 | reutilizar o vídeo editorial 720×1280; não ampliar o fragmento 360×480 nem adicionar outra mídia | dimensões/codec, requests de rede e captura do poster/em reprodução |
+| `tests/`, `.qa/correction-2026-07-13/` | regressão e evidências | Todas | RQ-001–070 observáveis | nenhuma aprovação sem prova; artefatos continuam fora do build | lint, tipos, testes, build, screenshots, gravações e relatório JSON |
+
+### Guardrails antes da implementação
+
+- Nenhuma biblioteca nova é necessária: React, CSS, `IntersectionObserver`, scroll snap e os componentes existentes cobrem o escopo.
+- O utilitário tipográfico afetado existe apenas no H1 da home; os demais títulos usam revelações por linha/bloco e serão verificados por regressão, não reconstruídos.
+- `InstagramFocus` é exclusivo de `/instagram`; `ControlledVideo` e `getWhatsAppUrl` são compartilhados e exigem defaults retrocompatíveis.
+- `selection.mp4` foi escolhido preliminarmente por ser o arquivo editorial vertical confirmado de maior resolução (720×1280, 8,8 s, sem áudio), com poster correspondente. `fragment.mp4` permanece secundário na home.
+- Não serão alterados mapa, endereço, estacionamento, FAQ, footer, SEO principal, lente, séries, paleta ou arquitetura geral da home.
+
+### Resultado verificado
+
+- A causa do H1 era whitespace final dentro de `.hero-word`: por estar no fim do `inline-block`, ele colapsava sem largura. O separador passou para fora do wrapper e a linha usa `flex` com gap somente entre palavras; os 24 caracteres continuam animados dentro de seis palavras indivisíveis.
+- A segunda linha recebeu escala responsiva própria em telas estreitas para manter `de um novo olhar.` integralmente na mesma linha. `aria-label`, texto real, pontuação, no-JS e reduced motion foram validados.
+- `InstagramFocus` agora usa as seis imagens da série 04 na ordem original, próxima imagem aparente, scroll snap, autoplay de 5,6 s, pausa de 6,5 s após interação, lifecycle de viewport/aba, reduced motion/saveData e um único clone da primeira imagem. O retorno medido do loop ficou em 4 px, sem troca visual perceptível.
+- Receituário e solar aparecem como duas faixas editoriais equivalentes, sem fotografia rotulada como grau e sem claims novos. Cada CTA gera uma mensagem factual própria no WhatsApp.
+- `selection.mp4` (720×1280, 8,8 s, sem áudio) entrou depois das escolhas e antes da localização, com poster, `muted`, `playsInline`, `loop`, preload metadata após hidratação, autoplay somente visível, pausa fora da tela/aba e poster em reduced motion/saveData.
+- `ControlledVideo` manteve defaults retrocompatíveis para os dois vídeos da home. Nenhuma dependência ou arquivo de mídia foi adicionado; mapa, endereço, estacionamento, FAQ, footer, SEO, lente, séries, paleta e estrutura da home ficaram preservados.
+
+| Gate / evidência | Resultado |
+|---|---|
+| Lint | aprovado — `npm run lint` |
+| TypeScript | aprovado — `npm run typecheck` |
+| Build | aprovado — `npm run build`, nove páginas/endpoints estáticos |
+| Testes | aprovado — 79/79 Playwright em 7,6 min |
+| Matriz visual | 16 capturas novas: duas rotas × oito viewports em `.qa/correction-2026-07-13/after/`; matriz legada incluiu ultrawide |
+| Galeria | `gallery-autoplay-390x844.webm`; autoplay, interação, retomada, offscreen, aba e reduced motion testados |
+| Vídeo | `video-playing-390x844.png`; metadata, poster, reprodução, offscreen, reduced motion e saveData testados |
+
+Preview criado em `https://lp-hikari-pjq1npt2r-bandeirargabriel-6963s-projects.vercel.app`. O build remoto também passou; `/` e `/instagram` estão atrás do login Vercel definido pelo projeto. Nenhuma promoção para produção foi executada.
+
 ## Resultado final do impacto da entrega anterior
 
 - A arquitetura prevista foi mantida; WebGL e bibliotecas de animação/carrossel não entraram.

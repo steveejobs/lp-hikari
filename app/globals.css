@@ -343,10 +343,13 @@ a {
 }
 
 .hero-title-line {
-  display: block;
-  width: fit-content;
+  display: flex;
+  width: max-content;
+  max-width: 100%;
+  column-gap: 0.2em;
   overflow: hidden;
   padding: 0.08em 0.03em 0.09em 0;
+  white-space: nowrap;
 }
 
 .hero-title-primary {
@@ -370,7 +373,8 @@ a {
 }
 
 .hero-word {
-  display: inline-block;
+  display: inline-flex;
+  flex: 0 0 auto;
   white-space: nowrap;
 }
 
@@ -1103,6 +1107,10 @@ html[data-motion-mode="lite"] [data-reveal] {
     max-width: 9ch;
     font-size: clamp(3.55rem, 16.5vw, 4.75rem);
     line-height: 0.82;
+  }
+
+  .hero-title-gold {
+    font-size: 0.78em;
   }
 
   .hero-description {
