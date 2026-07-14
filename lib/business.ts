@@ -33,7 +33,7 @@ export const instagramProductMessages = {
   prescription:
     "Olá! Vim pelo Instagram da Ótica Hikari e quero atendimento para escolher meus óculos de grau.",
   solar:
-    "Olá! Vim pelo Instagram da Ótica Hikari e quero atendimento para escolher meus óculos solares.",
+    "Olá! Vim pelo Instagram da Ótica Hikari e quero atendimento para escolher meus óculos solar.",
 } as const;
 
 export function getWhatsAppUrl(source: ContactSource, message = messages[source]) {

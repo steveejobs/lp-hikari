@@ -21,8 +21,8 @@ type NavigatorWithConnection = Navigator & {
   connection?: { saveData?: boolean };
 };
 
-const AUTOPLAY_DELAY = 5_600;
 const RESUME_DELAY = 6_500;
+const CONTINUOUS_SPEED = 22;
 
 export function InstagramFocus({ items }: InstagramFocusProps) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -30,6 +30,7 @@ export function InstagramFocus({ items }: InstagramFocusProps) {
   const dragRef = useRef<{ id: number; x: number; scrollLeft: number } | null>(null);
   const scrollEndRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const resumeRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [visible, setVisible] = useState(false);
   const [pageVisible, setPageVisible] = useState(true);
@@ -88,6 +89,7 @@ export function InstagramFocus({ items }: InstagramFocusProps) {
       document.removeEventListener("visibilitychange", onVisibility);
       if (resumeRef.current) clearTimeout(resumeRef.current);
       if (scrollEndRef.current) clearTimeout(scrollEndRef.current);
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     };
   }, []);
 
@@ -96,11 +98,38 @@ export function InstagramFocus({ items }: InstagramFocusProps) {
 
   useEffect(() => {
     if (!running) return;
-    const timer = window.setTimeout(() => {
-      scrollTo(activeIndex === items.length - 1 ? items.length : activeIndex + 1);
-    }, AUTOPLAY_DELAY);
-    return () => window.clearTimeout(timer);
-  }, [activeIndex, items.length, running, scrollTo]);
+    let previousTime = performance.now();
+    let position = viewportRef.current?.scrollLeft ?? 0;
+
+    const advance = (time: number) => {
+      const viewport = viewportRef.current;
+      if (!viewport) return;
+      const slides = viewport.querySelectorAll<HTMLElement>("[data-gallery-slide]");
+      const first = slides[0];
+      const clone = slides[items.length];
+      if (!first || !clone) return;
+
+      const elapsed = Math.min(time - previousTime, 64);
+      if (Math.abs(viewport.scrollLeft - position) > 2) position = viewport.scrollLeft;
+      position += (CONTINUOUS_SPEED * elapsed) / 1_000;
+      const loopPoint = Math.min(
+        clone.offsetLeft,
+        viewport.scrollWidth - viewport.clientWidth,
+      );
+      if (position >= loopPoint) {
+        position = first.offsetLeft + (position - loopPoint);
+      }
+      viewport.scrollLeft = position;
+      previousTime = time;
+      animationFrameRef.current = requestAnimationFrame(advance);
+    };
+
+    animationFrameRef.current = requestAnimationFrame(advance);
+    return () => {
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    };
+  }, [items.length, running]);
 
   function handleScroll() {
     const viewport = viewportRef.current;
@@ -118,13 +147,15 @@ export function InstagramFocus({ items }: InstagramFocusProps) {
     );
     setActiveIndex(closest.index === items.length ? 0 : closest.index);
 
-    if (scrollEndRef.current) clearTimeout(scrollEndRef.current);
-    scrollEndRef.current = setTimeout(() => {
-      if (closest.index === items.length) {
-        viewport.scrollTo({ left: slides[0]?.offsetLeft ?? 0, behavior: "auto" });
-        setActiveIndex(0);
-      }
-    }, 180);
+    if (!running) {
+      if (scrollEndRef.current) clearTimeout(scrollEndRef.current);
+      scrollEndRef.current = setTimeout(() => {
+        if (closest.index === items.length) {
+          viewport.scrollTo({ left: slides[0]?.offsetLeft ?? 0, behavior: "auto" });
+          setActiveIndex(0);
+        }
+      }, 180);
+    }
   }
 
   function handleKey(event: KeyboardEvent<HTMLDivElement>) {
@@ -181,6 +212,7 @@ export function InstagramFocus({ items }: InstagramFocusProps) {
       data-gallery-visible={visible ? "true" : "false"}
       data-gallery-reduced={reducedMotion ? "true" : "false"}
       data-gallery-paused={interactionPaused ? "true" : "false"}
+      data-gallery-mode="continuous"
       data-active-item={items[activeIndex]?.id}
     >
       <div

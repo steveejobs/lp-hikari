@@ -111,3 +111,36 @@ Preview criado em `https://lp-hikari-pjq1npt2r-bandeirargabriel-6963s-projects.v
 - Os maiores ajustes após medição foram: paths públicos no lugar de blur data serializado, token dourado de alto contraste para fundos claros, favicon 192 × 192, sans de sistema no caminho crítico e bloqueio do drag nativo das fotografias.
 - A mídia bruta duplicada e as marcas não confirmadas foram removidas depois do checkpoint, sem perda dos arquivos de produção.
 - Evidência: build estático, 28 testes Playwright, relatórios Lighthouse e 33 capturas/gravação em `.qa/`, tudo excluído da Vercel.
+
+## Refinamento cirúrgico de H1, seção de luz e rota social — 13/07/2026
+
+Matriz atualizada ao final da implementação, conforme solicitado. A alteração permaneceu restrita a H1, segunda seção da home, galeria social e clareza de produtos.
+
+| Arquivo / domínio | Componente | Rotas | Requisitos | Impacto realizado | Evidência |
+|---|---|---|---|---|---|
+| `app/globals.css` | H1 do hero | `/` | RQ-026–027, 055–056, 065–066, 071, 075 | removeu o limite de `10ch`, `max-width: 100%` e o recorte horizontal do wrapper; preservou palavras, caracteres e stagger | geometria após fontes, mobile/desktop, reduced motion e oito screenshots |
+| `app/page.tsx`, `app/home.module.css` | `lightIntro` | `/` | RQ-011, 026, 056–057, 072, 075 | adicionou crop lazy da série 04, duas órbitas, lente translúcida, ponto focal e traço conectando texto/visual; reveal próprio `brand-statement`/`light-concentrate` | teste de mídia/reveal e matriz visual completa |
+| `components/instagram-focus.tsx`, `components/instagram-focus.module.css` | `InstagramFocus` | `/instagram` | RQ-014–015, 020–024, 028–030, 060–063, 067, 073, 075 | substituiu avanço por etapas por fluxo contínuo de 22 px/s; acumulou subpixel, preservou drag/snap/teclado, pausas e clone acessível | avanço medido, pausa/retomada, loop, touch, reduced motion e gravação |
+| `app/instagram/instagram.module.css` | composição mobile da galeria | `/instagram` | RQ-004, 023–024, 029, 041, 073, 075 | viewport do trilho passou a `100vw` fora do gutter; hint e controles continuam dentro de safe areas | bounds x=0/largura exata em cinco mobiles, sem overflow documental |
+| `app/instagram/page.tsx`, `lib/business.ts` | escolhas solar/grau | `/instagram` | RQ-005, 007–008, 045, 068, 074–075 | tornou “óculos de grau” explícito no heading, faixa e CTA; ajustou copies factuais e mensagem solar solicitada | headings e parâmetros `text` do WhatsApp testados |
+| `tests/surgical-refinement.spec.ts`, `.qa/surgical-2026-07-13/` | QA da rodada | Todas | RQ-071–075 | adicionou checks geométricos, motion, full bleed, factualidade, matriz 16/16 e gravação | 52/52 funcionais consolidados; relatório JSON e artefatos locais |
+
+### Resultado
+
+- Causa do corte: `.hero-title` limitava o bloco a `10ch`; cada linha era `max-content`, mas `.hero-title-line` aplicava `max-width: 100%` junto de `overflow: hidden`. Assim, a segunda linha era medida corretamente e depois recortada pelo wrapper. O estado final agora conserva sua largura intrínseca e não recebe clipping horizontal.
+- A segunda seção preserva texto e fundo off-white, mas combina retrato real, crop de óculos, órbitas desenhadas, lente translúcida, pequeno foco com `光`, glint e linha de conexão. O motion desenha/assenta esses planos sem repetir a entrada do hero.
+- No mobile, a galeria sai do gutter com `100vw`. O rAF atua somente enquanto visível, acumula posição subpixel a 22 px/s e pausa para pointer/touch, aba oculta, offscreen, reduced motion e saveData. O espaçador final acompanha a largura do slide (22% no mobile), alinhando o clone antes do reset.
+- A rota social anuncia “Óculos solares e de grau” logo após a galeria e mantém duas faixas editoriais compactas com CTAs separados. Vídeo, localização e primeira dobra permaneceram intactos.
+- Nenhuma dependência, mídia, lente, mapa, hero, footer, FAQ, SEO ou arquitetura de rota foi alterada.
+
+| Gate | Resultado |
+|---|---|
+| Lint | aprovado — `npm run lint` |
+| TypeScript | aprovado — `npm run typecheck` |
+| Build local | aprovado — nove páginas/endpoints estáticos |
+| Testes funcionais | aprovado — 52/52 Playwright em 5,4 min |
+| Evidência visual | 16/16 screenshots, duas rotas × oito viewports |
+| Movimento social | `gallery-continuous-390x844.webm` |
+| Preview | `https://lp-hikari-bm3gg8las-bandeirargabriel-6963s-projects.vercel.app`, build remoto aprovado e acesso protegido por login Vercel |
+
+Nenhum deploy de produção foi executado.

@@ -334,7 +334,8 @@ a {
 
 .hero-title {
   margin: 0;
-  max-width: 10ch;
+  width: max-content;
+  max-width: none;
   font-family: var(--font-display), Georgia, serif;
   font-size: clamp(4.5rem, 7.35vw, 7.9rem);
   font-weight: 430;
@@ -345,9 +346,8 @@ a {
 .hero-title-line {
   display: flex;
   width: max-content;
-  max-width: 100%;
   column-gap: 0.2em;
-  overflow: hidden;
+  overflow: visible;
   padding: 0.08em 0.03em 0.09em 0;
   white-space: nowrap;
 }
@@ -1104,7 +1104,8 @@ html[data-motion-mode="lite"] [data-reveal] {
   }
 
   .hero-title {
-    max-width: 9ch;
+    width: max-content;
+    max-width: none;
     font-size: clamp(3.55rem, 16.5vw, 4.75rem);
     line-height: 0.82;
   }

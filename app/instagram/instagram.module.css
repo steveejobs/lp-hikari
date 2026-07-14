@@ -722,8 +722,16 @@
   }
 
   .visual {
-    width: min(100%, 23rem);
-    justify-self: center;
+    width: 100vw;
+    max-width: none;
+    margin-left: calc(50% - 50vw);
+    justify-self: stretch;
+  }
+
+  .visual > p {
+    padding-inline:
+      max(1rem, env(safe-area-inset-left))
+      max(1rem, env(safe-area-inset-right));
   }
 
   .productsHeading {

@@ -23,6 +23,11 @@
   cursor: grabbing;
 }
 
+.wrap[data-gallery-running="true"] .viewport {
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+}
+
 .track {
   display: flex;
   gap: 0.62rem;
@@ -176,6 +181,11 @@
 }
 
 @media (max-width: 540px) {
+  .wrap {
+    width: 100%;
+    max-width: none;
+  }
+
   .track {
     gap: 0.5rem;
   }
@@ -184,6 +194,15 @@
     flex-basis: 78%;
   }
 
+  .endSpace {
+    flex-basis: 22%;
+  }
+
+  .controls {
+    padding-inline:
+      max(1rem, env(safe-area-inset-left))
+      max(1rem, env(safe-area-inset-right));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

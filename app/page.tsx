@@ -136,16 +136,28 @@ export default function HomePage() {
 
         <section id="ensaios" className={styles.lightIntro} aria-labelledby="light-title">
           <div className={`site-shell ${styles.lightIntroGrid}`}>
-            <div className={styles.introCopy} data-reveal="focus-reveal">
+            <div className={styles.introCopy} data-reveal="brand-statement">
               <h2 id="light-title">Hikari é luz. <em>O resto é foco.</em></h2>
               <p>
                 Óculos solares e receituários ganham diferentes pontos de vista. A luz conduz
                 a sequência; cada ensaio preserva pessoa, gesto e atmosfera.
               </p>
             </div>
-            <div className={styles.introLens} data-reveal="optical-mask" aria-hidden="true">
-              <BrandIcon className={styles.introMark} sizes="112px" />
-              <i />
+            <div className={styles.introLens} data-reveal="light-concentrate" aria-hidden="true">
+              <span className={styles.introMedia}>
+                <Image
+                  src="/gallery/series-04/02.jpg"
+                  alt=""
+                  fill
+                  loading="lazy"
+                  sizes="(max-width: 720px) 72vw, (max-width: 960px) 34vw, 34rem"
+                />
+              </span>
+              <span className={styles.introFocus}>
+                <BrandIcon className={styles.introMark} sizes="88px" />
+              </span>
+              <span className={styles.introTrace} />
+              <i className={styles.introGlint} />
             </div>
           </div>
         </section>

@@ -78,15 +78,15 @@ export default function InstagramPage() {
           <header className={styles.productsHeading}>
             <div>
               <p>Para o seu jeito de olhar</p>
-              <h2 id="products-title">Solar e receituário, com a mesma presença.</h2>
+              <h2 id="products-title">Óculos solares e de grau, com a mesma presença.</h2>
             </div>
           </header>
 
           <div className={styles.productChoices}>
             <article className={styles.productChoice}>
               <div>
-                <h3>Óculos receituários</h3>
-                <p>Armações para acompanhar sua rotina e seu jeito de ver.</p>
+                <h3>Óculos de grau</h3>
+                <p>Armações para acompanhar sua rotina e o seu jeito de ver.</p>
               </div>
               <a
                 href={getWhatsAppUrl("instagram", instagramProductMessages.prescription)}
@@ -101,7 +101,7 @@ export default function InstagramPage() {
             <article className={styles.productChoice}>
               <div>
                 <h3>Óculos solares</h3>
-                <p>Proteção, expressão e novas formas de olhar.</p>
+                <p>Proteção, presença e novas formas de olhar.</p>
               </div>
               <a
                 href={getWhatsAppUrl("instagram", instagramProductMessages.solar)}
