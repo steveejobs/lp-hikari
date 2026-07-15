@@ -10,16 +10,14 @@ const revealSelector = "[data-reveal]";
 
 export function MotionController() {
   useLayoutEffect(() => {
-    const elements = Array.from(
-      document.querySelectorAll<HTMLElement>(revealSelector),
-    );
-    if (elements.length === 0) return;
-
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     );
     const saveData = Boolean(
       (navigator as NavigatorWithConnection).connection?.saveData,
+    );
+    const elements = Array.from(
+      document.querySelectorAll<HTMLElement>(revealSelector),
     );
 
     const revealEverything = () => {
@@ -35,6 +33,7 @@ export function MotionController() {
     }
 
     document.documentElement.dataset.motionMode = "full";
+    if (elements.length === 0) return;
 
     let observer: IntersectionObserver | null = null;
 

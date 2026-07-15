@@ -11,7 +11,7 @@ import {
   getWhatsAppUrl,
   instagramProductMessages,
 } from "@/lib/business";
-import { seriesFour } from "@/lib/galleries";
+import { seriesFour, seriesOne, seriesThree } from "@/lib/galleries";
 import styles from "./instagram.module.css";
 
 export const metadata: Metadata = {
@@ -25,104 +25,260 @@ export const metadata: Metadata = {
   },
 };
 
+const quickLinks = [
+  {
+    title: "Falar no WhatsApp",
+    description: "Atendimento direto para escolher seus óculos.",
+    href: getWhatsAppUrl("instagram"),
+    icon: WhatsAppIcon,
+    featured: true,
+  },
+  {
+    title: "Traçar rota",
+    description: "Rua 19 de Novembro, nº 68.",
+    href: business.mapsUrl,
+    icon: RouteIcon,
+    featured: false,
+  },
+  {
+    title: "Quero óculos de grau",
+    description: "Armações para rotina, trabalho e presença.",
+    href: getWhatsAppUrl("instagram", instagramProductMessages.prescription),
+    icon: WhatsAppIcon,
+    featured: false,
+  },
+  {
+    title: "Quero óculos solar",
+    description: "Proteção, estilo e lentes com personalidade.",
+    href: getWhatsAppUrl("instagram", instagramProductMessages.solar),
+    icon: WhatsAppIcon,
+    featured: false,
+  },
+  {
+    title: "Ver no Instagram",
+    description: "Campanhas, novidades e bastidores.",
+    href: business.instagramUrl,
+    icon: InstagramIcon,
+    featured: false,
+  },
+] as const;
+
+const productCards = [
+  {
+    title: "Óculos de grau",
+    description: "Escolha armações com orientação para o seu rosto e rotina.",
+    href: getWhatsAppUrl("instagram", instagramProductMessages.prescription),
+    image: seriesOne[9],
+    internal: false,
+  },
+  {
+    title: "Óculos solares",
+    description: "Modelos para presença, proteção e dias de luz intensa.",
+    href: getWhatsAppUrl("instagram", instagramProductMessages.solar),
+    image: seriesFour[3],
+    internal: false,
+  },
+  {
+    title: "Coleções",
+    description: "Veja formatos, lentes e acabamentos antes de visitar.",
+    href: business.instagramUrl,
+    image: seriesThree[0],
+    internal: false,
+  },
+  {
+    title: "Site completo",
+    description: "Conheça a experiência completa da Ótica Hikari.",
+    href: "/",
+    image: seriesOne[2],
+    internal: true,
+  },
+] as const;
+
+const heroPreview = [seriesFour[0], seriesOne[1], seriesThree[2]];
+const campaignImages = [seriesOne[8], seriesOne[3], seriesFour[4], seriesThree[3]];
+
 export default function InstagramPage() {
   return (
     <main id="conteudo" className={styles.page}>
-      <section className={styles.hero} aria-labelledby="instagram-title">
-        <header className={styles.header}>
-          <Link href="/" aria-label="Ótica Hikari — início">
+      <section className={styles.profileHero} aria-labelledby="instagram-title">
+        <div className={styles.mobileShell}>
+          <Link className={styles.logoCard} href="/" aria-label="Ótica Hikari — início">
             <Image
               src="/brand/logo-hikari.png"
               width={200}
               height={112}
-              sizes="(max-width: 720px) 100px, 120px"
+              sizes="104px"
               alt="Ótica Hikari"
+              priority
             />
           </Link>
-          <span>Araguaína · TO</span>
-        </header>
 
-        <div className={styles.heroGrid}>
-          <div className={styles.copy}>
-            <p className={styles.handle}>{business.instagramHandle}</p>
-            <h1 id="instagram-title">A luz encontra <em>seu novo olhar.</em></h1>
-            <p className={styles.description}>Óculos solares e receituários no Centro de Araguaína.</p>
-            <div className={styles.actions}>
-              <a className={styles.whatsapp} href={getWhatsAppUrl("instagram")} target="_blank" rel="noreferrer">
-                <WhatsAppIcon />
-                Falar no WhatsApp
-              </a>
-              <a className={styles.route} href={business.mapsUrl} target="_blank" rel="noreferrer">
-                <RouteIcon />
-                Traçar rota
-              </a>
-            </div>
-            <div className={styles.quickFacts}>
-              <span>Rua 19 de Novembro, nº 68</span>
-              <span>{business.parking}</span>
-            </div>
+          <p className={styles.handle}>{business.instagramHandle}</p>
+          <h1 id="instagram-title">
+            Ótica <em>Hikari</em>
+          </h1>
+          <p className={styles.description}>
+            Óculos solares e de grau no Centro de Araguaína, com estética Hikari e
+            atendimento direto pelo WhatsApp.
+          </p>
+
+          <div className={styles.badges} aria-label="Informações rápidas">
+            <span>Centro de Araguaína</span>
+            <span>{business.parking}</span>
           </div>
 
-          <div className={styles.visual}>
-            <p>
-              <BrandIcon className={styles.hintMark} sizes="18px" />
-              em movimento — deslize para explorar
-            </p>
-            <InstagramFocus items={seriesFour} />
+          <div className={styles.previewCard} aria-label="Seleção visual da Ótica Hikari">
+            <div className={styles.previewGrid}>
+              {heroPreview.map((item, index) => (
+                <figure className={styles.previewFrame} key={item.id}>
+                  <Image
+                    src={item.src}
+                    alt={item.alt}
+                    fill
+                    preload={index === 0}
+                    loading={index === 0 ? undefined : "lazy"}
+                    fetchPriority={index === 0 ? "high" : "auto"}
+                    sizes="(max-width: 540px) 44vw, 170px"
+                  />
+                </figure>
+              ))}
+            </div>
+            <div className={styles.previewCaption}>
+              <BrandIcon className={styles.previewMark} sizes="24px" />
+              <span>O florescer de um novo olhar</span>
+            </div>
           </div>
+        </div>
+      </section>
+
+      <nav className={styles.quickLinks} aria-label="Links rápidos da Ótica Hikari">
+        {quickLinks.map((item) => {
+          const content = (
+            <>
+              <span className={styles.linkIcon} aria-hidden="true">
+                <item.icon />
+              </span>
+              <span className={styles.linkText}>
+                <strong>{item.title}</strong>
+                <small>{item.description}</small>
+              </span>
+              <ArrowIcon className={styles.linkArrow} />
+            </>
+          );
+
+          return (
+            <a
+              className={styles.linkCard}
+              data-featured={item.featured ? "true" : undefined}
+              href={item.href}
+              target="_blank"
+              rel="noreferrer"
+              key={item.title}
+            >
+              {content}
+            </a>
+          );
+        })}
+
+        <Link className={styles.linkCard} href="/">
+          <span className={styles.linkIcon} aria-hidden="true">
+            <ArrowIcon />
+          </span>
+          <span className={styles.linkText}>
+            <strong>Site completo</strong>
+            <small>Veja a experiência completa da Ótica Hikari.</small>
+          </span>
+          <ArrowIcon className={styles.linkArrow} />
+        </Link>
+      </nav>
+
+      <section className={styles.spotlight} aria-labelledby="spotlight-title">
+        <div className={styles.sectionHeader}>
+          <div>
+            <p>Campanha em destaque</p>
+            <h2 id="spotlight-title">Editorial Hikari para escolher pelo olhar.</h2>
+          </div>
+          <a href={business.instagramUrl} target="_blank" rel="noreferrer">
+            ver seção
+          </a>
+        </div>
+
+        <div className={styles.campaignGrid}>
+          {campaignImages.map((item, index) => (
+            <figure className={styles.campaignFrame} key={`${item.id}-${index}`}>
+              <Image
+                src={item.src}
+                alt={item.alt}
+                fill
+                sizes={index === 0 ? "(max-width: 540px) 92vw, 430px" : "(max-width: 540px) 45vw, 210px"}
+              />
+            </figure>
+          ))}
         </div>
       </section>
 
       <section className={styles.products} aria-labelledby="products-title">
-        <div className={styles.productsInner} data-reveal="editorial">
-          <header className={styles.productsHeading}>
-            <div>
-              <p>Para o seu jeito de olhar</p>
-              <h2 id="products-title">Óculos solares e de grau, com a mesma presença.</h2>
-            </div>
-          </header>
-
-          <div className={styles.productChoices}>
-            <article className={styles.productChoice}>
-              <div>
-                <h3>Óculos de grau</h3>
-                <p>Armações para acompanhar sua rotina e o seu jeito de ver.</p>
-              </div>
-              <a
-                href={getWhatsAppUrl("instagram", instagramProductMessages.prescription)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <WhatsAppIcon />
-                Quero óculos de grau
-              </a>
-            </article>
-
-            <article className={styles.productChoice}>
-              <div>
-                <h3>Óculos solares</h3>
-                <p>Proteção, presença e novas formas de olhar.</p>
-              </div>
-              <a
-                href={getWhatsAppUrl("instagram", instagramProductMessages.solar)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <WhatsAppIcon />
-                Quero óculos solar
-              </a>
-            </article>
+        <div className={styles.sectionHeader}>
+          <div>
+            <p>Mini vitrine</p>
+            <h2 id="products-title">Escolha o caminho mais rápido.</h2>
           </div>
+          <a href={getWhatsAppUrl("instagram")} target="_blank" rel="noreferrer">
+            pedir ajuda
+          </a>
+        </div>
+
+        <div className={styles.productGrid}>
+          {productCards.map((item) => {
+            const card = (
+              <>
+                <span className={styles.productMedia}>
+                  <Image src={item.image.src} alt={item.image.alt} fill sizes="(max-width: 540px) 45vw, 210px" />
+                </span>
+                <span className={styles.productCopy}>
+                  <strong>{item.title}</strong>
+                  <small>{item.description}</small>
+                </span>
+              </>
+            );
+
+            return item.internal ? (
+              <Link className={styles.productCard} href={item.href} key={item.title}>
+                {card}
+              </Link>
+            ) : (
+              <a className={styles.productCard} href={item.href} target="_blank" rel="noreferrer" key={item.title}>
+                {card}
+              </a>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className={styles.focusSection} aria-labelledby="focus-title">
+        <div className={styles.darkShell}>
+          <div className={styles.darkHeader}>
+            <Image src="/brand/logo-hikari.png" width={56} height={31} sizes="28px" alt="" className={styles.darkMark} />
+            <div>
+              <p>Em movimento</p>
+              <h2 id="focus-title">Deslize pelas armações em foco.</h2>
+            </div>
+          </div>
+          <InstagramFocus items={seriesFour} />
         </div>
       </section>
 
       <section className={styles.motion} aria-labelledby="motion-title">
-        <div className={styles.motionInner} data-reveal="optical-mask">
-          <div className={styles.motionCopy}>
-            <h2 id="motion-title">Forma, gesto e luz <em>em movimento.</em></h2>
-            <p>Os óculos acompanham a expressão — de perto, com tempo e leveza.</p>
+        <div className={styles.darkShell}>
+          <div className={styles.darkHeader}>
+            <Image src="/brand/logo-hikari.png" width={56} height={31} sizes="28px" alt="" className={styles.darkMark} />
+            <div>
+              <p>Forma, gesto e luz</p>
+              <h2 id="motion-title">Veja a presença dos óculos no rosto.</h2>
+            </div>
           </div>
-          <div className={styles.editorialFrame} data-instagram-video>
+
+          <div className={styles.videoCard} data-instagram-video>
             <ControlledVideo
               className={styles.editorialVideo}
               src="/video/selection.mp4"
@@ -135,23 +291,43 @@ export default function InstagramPage() {
       </section>
 
       <section className={styles.visit} aria-labelledby="visit-title">
-        <div className={styles.visitInner} data-reveal="line-reveal">
+        <div className={styles.sectionHeader}>
           <div>
-            <h2 id="visit-title">No Centro de <em>Araguaína.</em></h2>
-            <address>{fullAddress}</address>
-            <p>{business.parking}.</p>
+            <p>Localização</p>
+            <h2 id="visit-title">No Centro de Araguaína.</h2>
           </div>
-          <a href={business.mapsUrl} target="_blank" rel="noreferrer">
-            Abrir rota <RouteIcon />
+        </div>
+
+        <div className={styles.infoList}>
+          <a className={styles.infoCard} href={business.mapsUrl} target="_blank" rel="noreferrer">
+            <RouteIcon />
+            <span>
+              <strong>Como chegar</strong>
+              <small>{fullAddress}</small>
+            </span>
+          </a>
+          <div className={styles.infoCard}>
+            <Image src="/brand/logo-hikari.png" width={44} height={25} sizes="22px" alt="" className={styles.infoMark} />
+            <span>
+              <strong>{business.parking}</strong>
+              <small>Mais praticidade para visitar a loja.</small>
+            </span>
+          </div>
+          <a className={styles.infoCard} href={getWhatsAppUrl("instagram")} target="_blank" rel="noreferrer">
+            <WhatsAppIcon />
+            <span>
+              <strong>{business.phoneDisplay}</strong>
+              <small>Chame antes de ir e receba orientação.</small>
+            </span>
           </a>
         </div>
       </section>
 
       <section className={styles.continueSection} aria-labelledby="continue-title">
-        <div className={styles.continueInner} data-reveal="focus-reveal">
-          <BrandIcon className={styles.continueMark} sizes="48px" />
-          <p>Quer percorrer toda a história?</p>
-          <h2 id="continue-title">Continue a experiência no site completo.</h2>
+        <BrandIcon className={styles.continueMark} sizes="42px" />
+        <p>Quer percorrer toda a história?</p>
+        <h2 id="continue-title">Continue a experiência no site completo.</h2>
+        <div className={styles.continueActions}>
           <Link href="/">
             Entrar no site <ArrowIcon />
           </Link>
@@ -166,13 +342,10 @@ export default function InstagramPage() {
           src="/brand/logo-hikari.png"
           width={200}
           height={112}
-          sizes="100px"
+          sizes="96px"
           alt="Ótica Hikari"
         />
         <p>O florescer de um novo olhar.</p>
-        <a href={getWhatsAppUrl("instagram")} target="_blank" rel="noreferrer">
-          <WhatsAppIcon /> WhatsApp
-        </a>
       </footer>
     </main>
   );

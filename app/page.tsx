@@ -15,6 +15,46 @@ import styles from "./home.module.css";
 const mapEmbedUrl =
   "https://www.google.com/maps?q=-7.1922897,-48.2094709&z=16&output=embed";
 
+const quickProofs = [
+  {
+    title: "Centro de Araguaína",
+    text: business.address.street,
+  },
+  {
+    title: "Solares e grau",
+    text: "Escolha para rotina, presença e proteção.",
+  },
+  {
+    title: business.parking,
+    text: "Mais praticidade para visitar a loja.",
+  },
+  {
+    title: "Atendimento direto",
+    text: business.phoneDisplay,
+  },
+] as const;
+
+const guidedChoices = [
+  {
+    title: "Óculos de grau",
+    text: "Armações para trabalho, leitura e uso diário.",
+    message:
+      "Olá! Vim pelo site da Ótica Hikari e quero atendimento para escolher meus óculos de grau.",
+  },
+  {
+    title: "Óculos solares",
+    text: "Modelos para proteção, presença e dias de luz intensa.",
+    message:
+      "Olá! Vim pelo site da Ótica Hikari e quero atendimento para escolher meus óculos solares.",
+  },
+  {
+    title: "Quero orientação",
+    text: "Conte sua rotina e receba um caminho mais certeiro.",
+    message:
+      "Olá! Vim pelo site da Ótica Hikari e quero orientação para escolher meus próximos óculos.",
+  },
+] as const;
+
 function AnimatedTitleLine({
   text,
   className,
@@ -132,6 +172,44 @@ export default function HomePage() {
             <span>Explorar a luz</span>
             <i aria-hidden="true" />
           </a>
+        </section>
+
+        <section id="escolha" className={styles.conversionSection} aria-labelledby="conversion-title">
+          <div className={`site-shell ${styles.conversionGrid}`}>
+            <div className={styles.proofPanel} data-reveal="editorial">
+              <p className={styles.lightKicker}>Provas rápidas</p>
+              <h2 id="conversion-title">Antes de escolher, veja o essencial.</h2>
+              <div className={styles.proofCards}>
+                {quickProofs.map((item) => (
+                  <article key={item.title}>
+                    <strong>{item.title}</strong>
+                    <span>{item.text}</span>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            <div className={styles.choicePanel} data-reveal="soft-settle">
+              <p className={styles.lightKicker}>Escolha guiada</p>
+              <h3>Qual caminho combina com sua necessidade?</h3>
+              <div className={styles.choiceList}>
+                {guidedChoices.map((item) => (
+                  <a
+                    key={item.title}
+                    href={getWhatsAppUrl("site", item.message)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <span>
+                      <strong>{item.title}</strong>
+                      <small>{item.text}</small>
+                    </span>
+                    <ArrowIcon />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
         </section>
 
         <section id="ensaios" className={styles.lightIntro} aria-labelledby="light-title">

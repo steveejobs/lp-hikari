@@ -19,7 +19,8 @@ export function SiteHeader() {
         </Link>
 
         <nav className="desktop-nav" aria-label="Navegação principal">
-          <a href="#ensaios">Ensaios</a>
+          <a href="#escolha">Escolha guiada</a>
+          <a href="#ensaios">Coleções</a>
           <a href="#loja">A loja</a>
           <a href="#localizacao">Como chegar</a>
         </nav>

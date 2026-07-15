@@ -8,6 +8,7 @@ import {
   useState,
   type KeyboardEvent,
   type PointerEvent,
+  type TouchEvent,
 } from "react";
 import type { GalleryItem } from "@/lib/galleries";
 import { ArrowIcon } from "@/components/icons";
@@ -22,12 +23,14 @@ type NavigatorWithConnection = Navigator & {
 };
 
 const RESUME_DELAY = 6_500;
-const CONTINUOUS_SPEED = 22;
+const CONTINUOUS_SPEED = 36;
+const MIN_VISIBLE_RATIO = 0.62;
 
 export function InstagramFocus({ items }: InstagramFocusProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ id: number; x: number; scrollLeft: number } | null>(null);
+  const touchDragRef = useRef<{ x: number; scrollLeft: number } | null>(null);
   const scrollEndRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const resumeRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const animationFrameRef = useRef<number | null>(null);
@@ -72,8 +75,8 @@ export function InstagramFocus({ items }: InstagramFocusProps) {
       setSaveData(Boolean((navigator as NavigatorWithConnection).connection?.saveData));
     };
     const observer = new IntersectionObserver(
-      ([entry]) => setVisible(entry.isIntersecting && entry.intersectionRatio >= 0.35),
-      { threshold: [0, 0.35, 0.65] },
+      ([entry]) => setVisible(entry.isIntersecting && entry.intersectionRatio >= MIN_VISIBLE_RATIO),
+      { threshold: [0, 0.35, MIN_VISIBLE_RATIO, 0.85] },
     );
     const onVisibility = () => setPageVisible(document.visibilityState === "visible");
 
@@ -158,6 +161,29 @@ export function InstagramFocus({ items }: InstagramFocusProps) {
     }
   }
 
+  function beginTouch(event: TouchEvent<HTMLDivElement>) {
+    pauseForInteraction();
+    const touch = event.touches[0];
+    if (!touch) return;
+    touchDragRef.current = {
+      x: touch.clientX,
+      scrollLeft: event.currentTarget.scrollLeft,
+    };
+  }
+
+  function moveTouch(event: TouchEvent<HTMLDivElement>) {
+    const drag = touchDragRef.current;
+    const touch = event.touches[0];
+    if (!drag || !touch) return;
+    event.currentTarget.scrollLeft = drag.scrollLeft - (touch.clientX - drag.x);
+    window.requestAnimationFrame(handleScroll);
+  }
+
+  function endTouch() {
+    touchDragRef.current = null;
+    scheduleResume();
+  }
+
   function handleKey(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key === "ArrowRight") {
       event.preventDefault();
@@ -227,6 +253,10 @@ export function InstagramFocus({ items }: InstagramFocusProps) {
         onPointerMove={moveDrag}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
+        onTouchStart={beginTouch}
+        onTouchMove={moveTouch}
+        onTouchEnd={endTouch}
+        onTouchCancel={endTouch}
         onScroll={handleScroll}
         onWheel={pauseForInteraction}
       >
