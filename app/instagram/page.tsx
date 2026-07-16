@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { BrandIcon } from "@/components/brand-icon";
-import { ControlledVideo } from "@/components/controlled-video";
+import { StaticVideo } from "@/components/static-video";
 import { ArrowIcon, InstagramIcon, RouteIcon, WhatsAppIcon } from "@/components/icons";
 import { InstagramFocus } from "@/components/instagram-focus";
-import { MotionController } from "@/components/motion-controller";
 import {
   business,
   fullAddress,
@@ -101,8 +100,7 @@ const campaignImages = [seriesOne[8], seriesOne[3], seriesFour[4], seriesThree[3
 export default function InstagramPage() {
   return (
     <main id="conteudo" className={styles.page}>
-      <MotionController />
-      <section className={styles.profileHero} aria-labelledby="instagram-title">
+      <section className={styles.profileHero} aria-labelledby="instagram-title" data-reveal="focus-reveal">
         <div className={styles.mobileShell}>
           <Link className={styles.logoCard} href="/" aria-label="Ótica Hikari — início">
             <Image
@@ -124,12 +122,12 @@ export default function InstagramPage() {
             atendimento direto pelo WhatsApp.
           </p>
 
-          <div className={styles.badges} aria-label="Informações rápidas">
+          <div className={styles.badges} aria-label="Informações rápidas" data-motion-stagger>
             <span>Centro de Araguaína</span>
             <span>{business.parking}</span>
           </div>
 
-          <div className={styles.previewCard} aria-label="Seleção visual da Ótica Hikari">
+          <div className={styles.previewCard} aria-label="Seleção visual da Ótica Hikari" data-pointer-glow>
             <div className={styles.previewGrid}>
               {heroPreview.map((item, index) => (
                 <figure className={styles.previewFrame} key={item.id}>
@@ -153,7 +151,7 @@ export default function InstagramPage() {
         </div>
       </section>
 
-      <nav className={styles.quickLinks} aria-label="Links rápidos da Ótica Hikari">
+      <nav className={styles.quickLinks} aria-label="Links rápidos da Ótica Hikari" data-reveal="soft-settle" data-motion-stagger>
         {quickLinks.map((item) => {
           const content = (
             <>
@@ -176,13 +174,14 @@ export default function InstagramPage() {
               target="_blank"
               rel="noreferrer"
               key={item.title}
+              data-pointer-glow
             >
               {content}
             </a>
           );
         })}
 
-        <Link className={styles.linkCard} href="/">
+        <Link className={styles.linkCard} href="/" data-pointer-glow>
           <span className={styles.linkIcon} aria-hidden="true">
             <ArrowIcon />
           </span>
@@ -194,7 +193,7 @@ export default function InstagramPage() {
         </Link>
       </nav>
 
-      <section className={styles.spotlight} aria-labelledby="spotlight-title">
+      <section className={styles.spotlight} aria-labelledby="spotlight-title" data-reveal="line-reveal">
         <div className={styles.sectionHeader}>
           <div>
             <p>Campanha em destaque</p>
@@ -205,7 +204,7 @@ export default function InstagramPage() {
           </a>
         </div>
 
-        <div className={styles.campaignGrid}>
+        <div className={styles.campaignGrid} data-motion-stagger>
           {campaignImages.map((item, index) => (
             <figure className={styles.campaignFrame} key={`${item.id}-${index}`}>
               <Image
@@ -219,7 +218,7 @@ export default function InstagramPage() {
         </div>
       </section>
 
-      <section className={styles.products} aria-labelledby="products-title">
+      <section className={styles.products} aria-labelledby="products-title" data-reveal="soft-settle">
         <div className={styles.sectionHeader}>
           <div>
             <p>Mini vitrine</p>
@@ -230,7 +229,7 @@ export default function InstagramPage() {
           </a>
         </div>
 
-        <div className={styles.productGrid}>
+        <div className={styles.productGrid} data-motion-stagger>
           {productCards.map((item) => {
             const card = (
               <>
@@ -245,11 +244,11 @@ export default function InstagramPage() {
             );
 
             return item.internal ? (
-              <Link className={styles.productCard} href={item.href} key={item.title}>
+              <Link className={styles.productCard} href={item.href} key={item.title} data-pointer-glow>
                 {card}
               </Link>
             ) : (
-              <a className={styles.productCard} href={item.href} target="_blank" rel="noreferrer" key={item.title}>
+              <a className={styles.productCard} href={item.href} target="_blank" rel="noreferrer" key={item.title} data-pointer-glow>
                 {card}
               </a>
             );
@@ -257,7 +256,7 @@ export default function InstagramPage() {
         </div>
       </section>
 
-      <section className={styles.focusSection} aria-labelledby="focus-title">
+      <section className={styles.focusSection} aria-labelledby="focus-title" data-reveal="horizontal-flow">
         <div className={styles.darkShell}>
           <div className={styles.darkHeader}>
             <Image src="/brand/logo-hikari.png" width={56} height={31} sizes="28px" alt="" className={styles.darkMark} />
@@ -270,7 +269,7 @@ export default function InstagramPage() {
         </div>
       </section>
 
-      <section className={styles.motion} aria-labelledby="motion-title">
+      <section className={styles.motion} aria-labelledby="motion-title" data-reveal="soft-settle">
         <div className={styles.darkShell}>
           <div className={styles.darkHeader}>
             <Image src="/brand/logo-hikari.png" width={56} height={31} sizes="28px" alt="" className={styles.darkMark} />
@@ -281,18 +280,17 @@ export default function InstagramPage() {
           </div>
 
           <div className={styles.videoCard} data-instagram-video>
-            <ControlledVideo
+            <StaticVideo
               className={styles.editorialVideo}
               src="/video/selection.mp4"
               poster="/video/selection-poster.jpg"
               label="Filme editorial da Ótica Hikari com modelo usando óculos"
-              preload="metadata"
             />
           </div>
         </div>
       </section>
 
-      <section className={styles.visit} aria-labelledby="visit-title">
+      <section className={styles.visit} aria-labelledby="visit-title" data-reveal="line-reveal">
         <div className={styles.sectionHeader}>
           <div>
             <p>Localização</p>
@@ -300,22 +298,22 @@ export default function InstagramPage() {
           </div>
         </div>
 
-        <div className={styles.infoList}>
-          <a className={styles.infoCard} href={business.mapsUrl} target="_blank" rel="noreferrer">
+        <div className={styles.infoList} data-motion-stagger>
+          <a className={styles.infoCard} href={business.mapsUrl} target="_blank" rel="noreferrer" data-pointer-glow>
             <RouteIcon />
             <span>
               <strong>Como chegar</strong>
               <small>{fullAddress}</small>
             </span>
           </a>
-          <div className={styles.infoCard}>
+          <div className={styles.infoCard} data-pointer-glow>
             <Image src="/brand/logo-hikari.png" width={44} height={25} sizes="22px" alt="" className={styles.infoMark} />
             <span>
               <strong>{business.parking}</strong>
               <small>Mais praticidade para visitar a loja.</small>
             </span>
           </div>
-          <a className={styles.infoCard} href={getWhatsAppUrl("instagram")} target="_blank" rel="noreferrer">
+          <a className={styles.infoCard} href={getWhatsAppUrl("instagram")} target="_blank" rel="noreferrer" data-pointer-glow>
             <WhatsAppIcon />
             <span>
               <strong>{business.phoneDisplay}</strong>
@@ -325,7 +323,7 @@ export default function InstagramPage() {
         </div>
       </section>
 
-      <section className={styles.continueSection} aria-labelledby="continue-title">
+      <section className={styles.continueSection} aria-labelledby="continue-title" data-reveal="focus-reveal" data-pointer-glow>
         <BrandIcon className={styles.continueMark} sizes="42px" />
         <p>Quer percorrer toda a história?</p>
         <h2 id="continue-title">Continue a experiência no site completo.</h2>

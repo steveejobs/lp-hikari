@@ -10,13 +10,14 @@ type SeriesCarouselProps = {
 
 export function SeriesCarousel({ items, label }: SeriesCarouselProps) {
   return (
-    <div className={styles.carousel} role="region" aria-roledescription="carrossel" aria-label={label} data-series="01">
-      <div id="series-one-track" className={styles.track} tabIndex={0} aria-label={`${label}. Deslize horizontalmente ou use os atalhos para navegar.`}>
+    <div className={styles.carousel} role="region" aria-roledescription="carrossel" aria-label={label} data-series="01" data-auto-carousel data-reveal="horizontal-flow">
+      <div id="series-one-track" className={styles.track} tabIndex={0} data-carousel-track aria-label={`${label}. Deslize horizontalmente ou use os atalhos para navegar.`}>
         {items.map((item, index) => (
           <article
             id={`series-one-${item.id}`}
             key={item.id}
             className={styles.slide}
+            data-carousel-slide
             data-series-item={item.id}
             aria-label={`${index + 1} de ${items.length}`}
           >

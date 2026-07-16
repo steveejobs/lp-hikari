@@ -145,9 +145,9 @@ export default function HomePage() {
             <div className={styles.proofPanel} data-reveal="editorial">
               <p className={styles.lightKicker}>Provas rápidas</p>
               <h2 id="conversion-title">Antes de escolher, veja o essencial.</h2>
-              <div className={styles.proofCards}>
+              <div className={styles.proofCards} data-reveal="soft-settle" data-motion-stagger>
                 {quickProofs.map((item) => (
-                  <article key={item.title}>
+                  <article key={item.title} data-pointer-glow>
                     <strong>{item.title}</strong>
                     <span>{item.text}</span>
                   </article>
@@ -158,13 +158,14 @@ export default function HomePage() {
             <div className={styles.choicePanel} data-reveal="soft-settle">
               <p className={styles.lightKicker}>Escolha guiada</p>
               <h3>Qual caminho combina com sua necessidade?</h3>
-              <div className={styles.choiceList}>
+              <div className={styles.choiceList} data-reveal="horizontal-flow" data-motion-stagger>
                 {guidedChoices.map((item) => (
                   <a
                     key={item.title}
                     href={getWhatsAppUrl("site", item.message)}
                     target="_blank"
                     rel="noreferrer"
+                    data-pointer-glow
                   >
                     <span>
                       <strong>{item.title}</strong>
@@ -346,20 +347,20 @@ export default function HomePage() {
             <div data-reveal="focus-reveal">
               <h2 id="faq-title">Antes de <em>visitar.</em></h2>
             </div>
-            <div className={styles.faqList} data-reveal="soft-settle">
-              <details>
+            <div className={styles.faqList} data-reveal="soft-settle" data-motion-stagger>
+              <details data-pointer-glow>
                 <summary>O que encontro na Ótica Hikari?</summary>
                 <p>Óculos solares e receituários.</p>
               </details>
-              <details>
+              <details data-pointer-glow>
                 <summary>Onde fica a loja?</summary>
                 <p>{fullAddress}.</p>
               </details>
-              <details>
+              <details data-pointer-glow>
                 <summary>Há estacionamento?</summary>
                 <p>Sim. A Ótica Hikari informa estacionamento gratuito.</p>
               </details>
-              <details>
+              <details data-pointer-glow>
                 <summary>Como começo o atendimento?</summary>
                 <p>Envie uma mensagem pelo WhatsApp e conte o que você procura.</p>
               </details>

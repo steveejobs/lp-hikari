@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "./motion.css";
+import { MotionRuntime } from "@/components/motion-runtime";
 import { business, fullAddress } from "@/lib/business";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -76,6 +78,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
+        <MotionRuntime />
       </body>
     </html>
   );

@@ -9,11 +9,11 @@ type FocusGalleryProps = {
 
 export function FocusGallery({ items, label }: FocusGalleryProps) {
   return (
-    <div className={styles.gallery} role="region" aria-label={label} data-series="03">
+    <div className={styles.gallery} role="region" aria-label={label} data-series="03" data-auto-carousel data-reveal="optical-mask">
       <div className={styles.stage}>
-        <div className={styles.focusTrack} tabIndex={0} aria-label={`${label}. Deslize ou escolha um retrato.`}>
+        <div className={styles.focusTrack} tabIndex={0} data-carousel-track aria-label={`${label}. Deslize ou escolha um retrato.`}>
           {items.map((item) => (
-            <figure id={`focus-${item.id}`} key={item.id} className={styles.focusSlide}>
+            <figure id={`focus-${item.id}`} key={item.id} className={styles.focusSlide} data-carousel-slide>
               <Image
                 src={item.src}
                 alt={item.alt}

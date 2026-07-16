@@ -283,7 +283,6 @@ export function InstagramFocus({ items }: InstagramFocusProps) {
                   className={styles.image}
                   draggable={false}
                 />
-                <span className={styles.opticalTrace} aria-hidden="true" />
               </figure>
             );
           })}

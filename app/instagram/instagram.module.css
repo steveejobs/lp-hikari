@@ -1,5 +1,6 @@
 .page {
   min-height: 100svh;
+  overflow-x: clip;
   padding-bottom: calc(1.1rem + env(safe-area-inset-bottom));
   color: var(--black);
   background:
@@ -96,14 +97,16 @@
   font-size: clamp(2.68rem, 12.4vw, 3.75rem);
   font-weight: 520;
   letter-spacing: -0.052em;
-  line-height: 0.82;
+  line-height: 1.04;
   text-align: center;
 }
 
 .profileHero h1 em {
   display: block;
+  margin-top: 0.08em;
   color: var(--gold-ink);
   font-weight: 340;
+  line-height: 1;
 }
 
 .description {
@@ -150,17 +153,7 @@
 }
 
 .previewCard::before {
-  content: "";
-  position: absolute;
-  z-index: 2;
-  right: 15%;
-  top: 19%;
-  width: 38%;
-  aspect-ratio: 1;
-  border: 1px solid rgba(252, 198, 14, 0.86);
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 0.55rem rgba(252, 198, 14, 0.045);
-  pointer-events: none;
+  content: none;
 }
 
 .previewGrid {
@@ -203,18 +196,16 @@
 }
 
 .previewCaption {
-  position: absolute;
-  z-index: 3;
-  left: 0.95rem;
-  right: 0.95rem;
-  bottom: 0.78rem;
+  position: relative;
+  z-index: 1;
   min-height: 2.28rem;
+  margin-top: 0.48rem;
   padding: 0.4rem 0.65rem;
   display: flex;
   align-items: center;
   gap: 0.55rem;
   border: 1px solid rgba(252, 198, 14, 0.26);
-  border-radius: 999px;
+  border-radius: 0.7rem;
   color: var(--ivory);
   background: rgba(8, 8, 6, 0.74);
   backdrop-filter: blur(12px);
@@ -350,7 +341,7 @@
   font-size: 1.58rem;
   font-weight: 520;
   letter-spacing: -0.035em;
-  line-height: 0.98;
+  line-height: 1.08;
 }
 
 .sectionHeader a {
@@ -501,7 +492,7 @@
   font-size: 1.68rem;
   font-weight: 460;
   letter-spacing: -0.038em;
-  line-height: 0.96;
+  line-height: 1.08;
 }
 
 .videoCard {
@@ -608,7 +599,7 @@
   font-size: 2.25rem;
   font-weight: 430;
   letter-spacing: -0.045em;
-  line-height: 0.92;
+  line-height: 1.02;
 }
 
 .continueActions {
@@ -683,7 +674,83 @@
   .continueSection,
   .footer,
   .darkShell {
-    width: min(100% - 2rem, 31rem);
+    width: min(100% - 3rem, 58rem);
+  }
+
+  .profileHero .mobileShell {
+    width: min(100% - 3rem, 44rem);
+  }
+
+  .profileHero h1 {
+    font-size: clamp(3.4rem, 6vw, 5rem);
+  }
+
+  .description {
+    max-width: 34rem;
+    font-size: 0.96rem;
+  }
+
+  .previewGrid {
+    height: clamp(17rem, 29vw, 22rem);
+  }
+
+  .quickLinks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.72rem;
+  }
+
+  .quickLinks .linkCard:first-child,
+  .quickLinks .linkCard:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .campaignGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(12rem, 1fr));
+  }
+
+  .campaignFrame:first-child {
+    grid-column: 1 / 3;
+    grid-row: 1 / 3;
+    aspect-ratio: auto;
+  }
+
+  .campaignFrame:nth-child(4) {
+    grid-column: 3 / 5;
+  }
+
+  .campaignFrame:not(:first-child) {
+    aspect-ratio: auto;
+  }
+
+  .productGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .productCard {
+    min-height: 16rem;
+  }
+
+  .productMedia {
+    min-height: 10.5rem;
+  }
+
+  .videoCard {
+    width: min(48%, 24rem);
+    margin: 1.4rem auto 0;
+  }
+
+  .infoList {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .infoCard {
+    min-height: 5.3rem;
+  }
+
+  .continueSection {
+    width: min(100% - 3rem, 44rem);
+    padding: 2.6rem 2rem;
   }
 
   .quickLinks {
