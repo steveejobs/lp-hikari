@@ -17,7 +17,7 @@ async function prepareFullPage(page: Page, route: string) {
   await expect(page.locator("h1")).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute(
     "data-motion-mode",
-    /full|lite/,
+    "css",
   );
 
   await page.evaluate(async () => {

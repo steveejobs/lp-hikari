@@ -1,24 +1,4 @@
-import { expect, test, type Locator, type Page } from "@playwright/test";
-
-type LensPoint = {
-  x: number;
-  y: number;
-};
-
-async function readLens(stage: Locator): Promise<LensPoint> {
-  return stage.evaluate((element) => ({
-    x: Number.parseFloat(
-      (element as HTMLElement).style.getPropertyValue("--lens-x"),
-    ),
-    y: Number.parseFloat(
-      (element as HTMLElement).style.getPropertyValue("--lens-y"),
-    ),
-  }));
-}
-
-function pointDistance(first: LensPoint, second: LensPoint) {
-  return Math.hypot(first.x - second.x, first.y - second.y);
-}
+import { expect, test, type Page } from "@playwright/test";
 
 async function waitForMapFrame(page: Page) {
   await expect
@@ -94,118 +74,44 @@ test("a entrada da home é curta, variada e não bloqueia os CTAs", async ({
   expect(revealFamilies.length).toBeGreaterThanOrEqual(6);
 });
 
-test("a lente completa a trajetória pelo rosto e reinicia sem salto", async ({
-  page,
-}) => {
-  test.setTimeout(32_000);
+test("os traços de luz se movem fora do retrato sem duplicar ou recortar a imagem", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/", { waitUntil: "domcontentloaded" });
 
-  const stage = page.locator("[data-optical-hero]");
-  await expect(stage).toHaveAttribute("data-lens-motion", "organic");
-  await expect(stage).toHaveAttribute("data-lens-running", "true");
+  const stage = page.locator("[data-light-trail-hero]");
+  await expect(stage).toBeVisible();
+  await expect(stage.locator(".hero-light-path")).toHaveCount(3);
+  await expect(stage.locator("img")).toHaveCount(1);
+  await expect(page.locator(".refracted-layer, .lens-orbit")).toHaveCount(0);
 
-  const duration = Number(await stage.getAttribute("data-lens-duration"));
-  expect(duration).toBe(15_600);
-  await page.waitForTimeout(1_250);
+  const imageState = await stage.locator("img").evaluate((image) => ({
+    fit: getComputedStyle(image).objectFit,
+    naturalRatio: (image as HTMLImageElement).naturalWidth / (image as HTMLImageElement).naturalHeight,
+    frameRatio: image.parentElement!.clientWidth / image.parentElement!.clientHeight,
+  }));
+  expect(imageState.fit).toBe("contain");
+  expect(Math.abs(imageState.naturalRatio - imageState.frameRatio)).toBeLessThan(0.01);
 
-  const samples: LensPoint[] = [await readLens(stage)];
-  for (let index = 0; index < 6; index += 1) {
-    await page.waitForTimeout(duration / 6);
-    samples.push(await readLens(stage));
-  }
-
-  const xValues = samples.map((point) => point.x);
-  const yValues = samples.map((point) => point.y);
-  expect(Math.max(...xValues) - Math.min(...xValues)).toBeGreaterThan(24);
-  expect(Math.max(...yValues) - Math.min(...yValues)).toBeGreaterThan(17);
-
-  expect(
-    samples.some((point) => point.x < 44 && point.y >= 30 && point.y <= 42),
-  ).toBeTruthy();
-  expect(
-    samples.some((point) => point.x >= 45 && point.x <= 57 && point.y > 43),
-  ).toBeTruthy();
-  expect(
-    samples.some((point) => point.x > 62 || point.y < 28),
-  ).toBeTruthy();
-
-  expect(pointDistance(samples[0], samples.at(-1) ?? samples[0])).toBeLessThan(
-    5,
-  );
-  await expect
-    .poll(
-      async () => Number(await stage.getAttribute("data-lens-cycle")),
-      { timeout: 4_000 },
-    )
-    .toBeGreaterThanOrEqual(1);
+  const trails = stage.locator(".hero-light-trails");
+  const startTransform = await trails.evaluate((element) => getComputedStyle(element).transform);
+  await page.waitForTimeout(400);
+  const endTransform = await trails.evaluate((element) => getComputedStyle(element).transform);
+  expect(endTransform).not.toBe(startTransform);
 });
 
-test("a lente pausa fora da viewport, na aba oculta e em reduced motion", async ({
-  browser,
-}) => {
-  const context = await browser.newContext({
-    viewport: { width: 1366, height: 768 },
-  });
-  const page = await context.newPage();
-  await page.goto("/", { waitUntil: "domcontentloaded" });
-  const stage = page.locator("[data-optical-hero]");
-  await page.waitForTimeout(1_300);
-
-  await page.locator("#localizacao").scrollIntoViewIfNeeded();
-  await expect(stage).toHaveAttribute("data-lens-running", "false");
-  const offscreenStart = await readLens(stage);
-  await page.waitForTimeout(500);
-  const offscreenEnd = await readLens(stage);
-  expect(pointDistance(offscreenStart, offscreenEnd)).toBeLessThan(0.1);
-
-  await stage.scrollIntoViewIfNeeded();
-  await expect(stage).toHaveAttribute("data-lens-running", "true");
-  await page.evaluate(() => {
-    Object.defineProperty(document, "visibilityState", {
-      configurable: true,
-      value: "hidden",
-    });
-    document.dispatchEvent(new Event("visibilitychange"));
-  });
-  await expect(stage).toHaveAttribute("data-lens-running", "false");
-  const hiddenStart = await readLens(stage);
-  await page.waitForTimeout(500);
-  const hiddenEnd = await readLens(stage);
-  expect(pointDistance(hiddenStart, hiddenEnd)).toBeLessThan(0.1);
-  await context.close();
-
-  const touchContext = await browser.newContext({
-    viewport: { width: 390, height: 844 },
-    hasTouch: true,
-    isMobile: true,
-  });
-  const touchPage = await touchContext.newPage();
-  await touchPage.goto("/", { waitUntil: "domcontentloaded" });
-  const touchStage = touchPage.locator("[data-optical-hero]");
-  await touchStage.scrollIntoViewIfNeeded();
-  await expect(touchStage).toHaveAttribute("data-lens-motion", "organic");
-  await expect(touchStage).toHaveAttribute("data-lens-duration", "17400");
-  await expect(touchStage).toHaveAttribute("data-lens-running", "true");
-  await touchPage.waitForTimeout(1_250);
-  const touchStart = await readLens(touchStage);
-  await touchPage.waitForTimeout(700);
-  const touchEnd = await readLens(touchStage);
-  expect(pointDistance(touchStart, touchEnd)).toBeGreaterThan(0.25);
-  await touchContext.close();
-
+test("movimento reduzido mantém retratos completos e traços estáticos", async ({ browser }) => {
   const reducedContext = await browser.newContext({
     viewport: { width: 390, height: 844 },
     reducedMotion: "reduce",
   });
   const reducedPage = await reducedContext.newPage();
   await reducedPage.goto("/", { waitUntil: "domcontentloaded" });
-  const reducedStage = reducedPage.locator("[data-optical-hero]");
-  await expect(reducedStage).toHaveAttribute("data-lens-motion", "static");
-  const reducedStart = await readLens(reducedStage);
-  await reducedPage.waitForTimeout(650);
-  const reducedEnd = await readLens(reducedStage);
-  expect(pointDistance(reducedStart, reducedEnd)).toBeLessThan(0.1);
+  const reducedStage = reducedPage.locator("[data-light-trail-hero]");
+  const path = reducedStage.locator(".hero-light-path-primary");
+  const duration = await path.evaluate((element) => getComputedStyle(element).animationDuration);
+  expect(Number.parseFloat(duration)).toBeLessThanOrEqual(0.01);
+  await expect(reducedStage.locator("img")).toHaveCSS("object-fit", "contain");
+  await expect(reducedPage.locator('[data-reveal="light-concentrate"] img')).toHaveCSS("object-fit", "contain");
   await reducedContext.close();
 });
 

@@ -81,8 +81,8 @@
   inset: 0;
   display: block;
   background: linear-gradient(90deg, var(--gold-deep), var(--gold));
-  transform-origin: left;
-  transition: transform var(--motion-base) var(--ease-focus);
+  width: 100%;
+  transform: none;
 }
 
 .dots {
@@ -101,6 +101,7 @@
   border: 0;
   background: transparent;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .dot::before {
@@ -111,17 +112,12 @@
   transition: height 180ms ease, background 180ms ease;
 }
 
-.dot[data-active="true"]::before {
-  height: 3px;
-  background: var(--gold);
-}
-
 .arrows {
   display: flex;
   gap: 0.5rem;
 }
 
-.arrows button {
+.arrows a {
   width: 2.9rem;
   height: 2.9rem;
   padding: 0;
@@ -132,22 +128,18 @@
   color: var(--ivory);
   background: transparent;
   cursor: pointer;
+  text-decoration: none;
   transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
 }
 
-.arrows button:first-child svg {
+.arrows a:first-child svg {
   transform: rotate(180deg);
 }
 
-.arrows button:hover:not(:disabled) {
+.arrows a:hover {
   color: var(--black);
   border-color: var(--gold);
   background: var(--gold);
-}
-
-.arrows button:disabled {
-  opacity: 0.28;
-  cursor: not-allowed;
 }
 
 .arrows svg {
@@ -178,7 +170,7 @@
     display: none;
   }
 
-  .arrows button {
+  .arrows a {
     width: 3rem;
     height: 3rem;
   }
@@ -186,9 +178,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .image,
-  .progress i,
   .dot::before,
-  .arrows button {
+  .arrows a {
     transition: none;
   }
 }

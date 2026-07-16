@@ -5,6 +5,7 @@ import { BrandIcon } from "@/components/brand-icon";
 import { ControlledVideo } from "@/components/controlled-video";
 import { ArrowIcon, InstagramIcon, RouteIcon, WhatsAppIcon } from "@/components/icons";
 import { InstagramFocus } from "@/components/instagram-focus";
+import { MotionController } from "@/components/motion-controller";
 import {
   business,
   fullAddress,
@@ -100,6 +101,7 @@ const campaignImages = [seriesOne[8], seriesOne[3], seriesFour[4], seriesThree[3
 export default function InstagramPage() {
   return (
     <main id="conteudo" className={styles.page}>
+      <MotionController />
       <section className={styles.profileHero} aria-labelledby="instagram-title">
         <div className={styles.mobileShell}>
           <Link className={styles.logoCard} href="/" aria-label="Ótica Hikari — início">

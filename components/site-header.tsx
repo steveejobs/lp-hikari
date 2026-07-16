@@ -13,6 +13,8 @@ export function SiteHeader() {
             alt="Ótica Hikari"
             width={200}
             height={112}
+            preload
+            fetchPriority="high"
             sizes="(max-width: 767px) 102px, 124px"
             className="header-logo"
           />

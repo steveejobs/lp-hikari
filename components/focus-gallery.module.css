@@ -16,9 +16,30 @@
   border-radius: 0 clamp(2.8rem, 6vw, 5rem) 0 0 / 0 clamp(2rem, 4vw, 3.5rem) 0 0;
 }
 
+.focusTrack {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.focusTrack::-webkit-scrollbar {
+  display: none;
+}
+
+.focusSlide {
+  position: relative;
+  flex: 0 0 100%;
+  height: 100%;
+  margin: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
 .activeImage {
   object-fit: cover;
-  animation: refocus 520ms var(--ease-optic) both;
 }
 
 .stage::after {
@@ -43,62 +64,6 @@
   pointer-events: none;
 }
 
-.progress {
-  position: absolute;
-  z-index: 4;
-  left: 1rem;
-  bottom: 1.25rem;
-  width: clamp(3.5rem, 8vw, 5.5rem);
-  height: 2px;
-  overflow: hidden;
-  background: rgba(243, 239, 229, 0.26);
-}
-
-.progress i {
-  position: absolute;
-  inset: 0;
-  display: block;
-  background: var(--gold);
-  transform-origin: left;
-  transition: transform var(--motion-base) var(--ease-focus);
-}
-
-.stageArrows {
-  position: absolute;
-  z-index: 5;
-  right: 0.8rem;
-  bottom: 0.7rem;
-  display: flex;
-  gap: 0.4rem;
-}
-
-.stageArrows button {
-  width: 3rem;
-  height: 3rem;
-  padding: 0;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(243, 239, 229, 0.3);
-  border-radius: 50%;
-  color: var(--ivory);
-  background: rgba(8, 8, 6, 0.34);
-  backdrop-filter: blur(8px);
-  cursor: pointer;
-}
-
-.stageArrows button:first-child svg {
-  transform: rotate(180deg);
-}
-
-.stageArrows button:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.stageArrows svg {
-  width: 1rem;
-}
-
 .choices {
   display: grid;
   gap: 0.55rem;
@@ -117,6 +82,7 @@
   font: 800 0.55rem/1 var(--font-sans), sans-serif;
   letter-spacing: 0.14em;
   text-align: left;
+  text-decoration: none;
 }
 
 .thumb {
@@ -134,22 +100,17 @@
   object-position: center 32%;
 }
 
-.choice:not([data-active="true"]) .thumb {
+.choice:not([aria-current="true"]) .thumb {
   opacity: 0.52;
 }
 
-.choice[data-active="true"] {
+.choice[aria-current="true"] {
   color: var(--gold);
 }
 
-.choice[data-active="true"] .thumb {
+.choice[aria-current="true"] .thumb {
   border-color: var(--gold);
   opacity: 1;
-}
-
-@keyframes refocus {
-  from { opacity: 0.45; filter: blur(7px) saturate(0.75); transform: scale(1.025); }
-  to { opacity: 1; filter: blur(0) saturate(1); transform: scale(1); }
 }
 
 @media (max-width: 720px) {
@@ -172,11 +133,4 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .activeImage {
-    animation: none;
-  }
-
-  .progress i {
-    transition: none;
-  }
 }

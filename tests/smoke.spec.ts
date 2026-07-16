@@ -187,7 +187,7 @@ test("gestos touch mudam o foco sem depender de hover", async ({ browser }) => {
   const stage = page.locator('[data-series="04"] [role="region"]');
   await expect(page.locator("html")).toHaveAttribute(
     "data-motion-mode",
-    /full|lite/,
+    "css",
   );
   await expect(stage).toBeVisible();
   const box = await stage.boundingBox();
@@ -276,10 +276,7 @@ test("saveData impede autoplay e download antecipado do vídeo", async ({ browse
     if (request.url().endsWith(".mp4")) videoRequests.push(request.url());
   });
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  await expect(page.locator("[data-optical-hero]")).toHaveAttribute(
-    "data-optical-quality",
-    "lite",
-  );
+  await expect(page.locator("[data-light-trail-hero] img")).toHaveCSS("object-fit", "contain");
   await page.locator("video").first().scrollIntoViewIfNeeded();
   await page.waitForTimeout(900);
   expect(await page.locator("video").first().evaluate((video) => (video as HTMLVideoElement).paused)).toBeTruthy();

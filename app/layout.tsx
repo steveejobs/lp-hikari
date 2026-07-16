@@ -1,15 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Newsreader } from "next/font/google";
 import "./globals.css";
-import { MotionController } from "@/components/motion-controller";
 import { business, fullAddress } from "@/lib/business";
 import { getSiteUrl } from "@/lib/site-url";
-
-const display = Newsreader({
-  subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-});
 
 const siteUrl = getSiteUrl();
 
@@ -76,11 +68,10 @@ const structuredData = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" className={display.variable}>
+    <html lang="pt-BR" data-motion-mode="css">
       <body>
         <a className="skip-link" href="#conteudo">Pular para o conteúdo</a>
         {children}
-        <MotionController />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

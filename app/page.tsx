@@ -1,7 +1,6 @@
 import Image from "next/image";
-import { Fragment, type CSSProperties } from "react";
 import { BrandIcon } from "@/components/brand-icon";
-import { ControlledVideo } from "@/components/controlled-video";
+import { StaticVideo } from "@/components/static-video";
 import { FocusGallery } from "@/components/focus-gallery";
 import { OpticalHero } from "@/components/optical-hero";
 import { ArrowIcon, RouteIcon, WhatsAppIcon } from "@/components/icons";
@@ -58,40 +57,15 @@ const guidedChoices = [
 function AnimatedTitleLine({
   text,
   className,
-  delayOffset,
 }: {
   text: string;
   className: string;
-  delayOffset: number;
 }) {
   const words = text.split(" ");
 
   return (
     <span className={className} aria-hidden="true">
-      {words.map((word, wordIndex) => {
-        const wordOffset =
-          delayOffset +
-          words
-            .slice(0, wordIndex)
-            .reduce((offset, previousWord) => offset + previousWord.length + 1, 0);
-
-        return (
-          <Fragment key={`${word}-${wordIndex}`}>
-            <span className="hero-word">
-              {Array.from(word).map((character, index) => (
-                <span
-                  className="hero-char"
-                  key={`${character}-${index}`}
-                  style={{ "--char-index": index + wordOffset } as CSSProperties}
-                >
-                  {character}
-                </span>
-              ))}
-            </span>
-            {wordIndex < words.length - 1 ? " " : null}
-          </Fragment>
-        );
-      })}
+      {words.map((word) => <span className="hero-word" key={word}>{word}</span>)}
     </span>
   );
 }
@@ -103,12 +77,6 @@ export default function HomePage() {
       <main id="conteudo">
         <section className="home-hero" aria-labelledby="hero-title">
           <div className="hero-ambient" aria-hidden="true" />
-          <BrandIcon
-            className="hero-symbol"
-            priority
-            sizes="(max-width: 720px) 48vw, min(24vw, 336px)"
-          />
-
           <div className="site-shell hero-grid">
             <div className="hero-copy">
               <p className="eyebrow">
@@ -119,12 +87,10 @@ export default function HomePage() {
                 <AnimatedTitleLine
                   text="O florescer"
                   className="hero-title-line hero-title-primary"
-                  delayOffset={0}
                 />
                 <AnimatedTitleLine
                   text="de um novo olhar."
                   className="hero-title-line hero-title-gold"
-                  delayOffset={3}
                 />
               </h1>
               <p className="hero-description">
@@ -300,18 +266,17 @@ export default function HomePage() {
               </p>
             </div>
             <figure className={styles.primaryVideo} data-reveal="optical-mask">
-              <ControlledVideo
+              <StaticVideo
                 src="/video/selection.mp4"
                 poster="/video/selection-poster.jpg"
                 label="Vídeo de uma mulher apresentando óculos solares"
               />
             </figure>
             <figure className={styles.fragmentVideo} data-reveal="soft-settle">
-              <ControlledVideo
+              <StaticVideo
                 src="/video/fragment.mp4"
                 poster="/video/fragment-poster.jpg"
                 label="Fragmento em vídeo com diferentes armações"
-                autoplay={false}
               />
             </figure>
           </div>

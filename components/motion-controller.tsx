@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect } from "react";
+import { useEffect } from "react";
 
 type NavigatorWithConnection = Navigator & {
   connection?: { saveData?: boolean };
@@ -9,7 +9,7 @@ type NavigatorWithConnection = Navigator & {
 const revealSelector = "[data-reveal]";
 
 export function MotionController() {
-  useLayoutEffect(() => {
+  useEffect(() => {
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     );
